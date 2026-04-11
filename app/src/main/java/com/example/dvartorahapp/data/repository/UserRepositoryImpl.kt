@@ -20,7 +20,7 @@ class UserRepositoryImpl @Inject constructor(
     override fun getUserProfile(uid: String): Flow<UserProfile?> = callbackFlow {
         val listener = collection.document(uid).addSnapshotListener { snapshot, error ->
             if (error != null) {
-                close(kotlinx.coroutines.CancellationException(error.message ?: "Firestore error", error))
+                trySend(null)
                 return@addSnapshotListener
             }
             trySend(snapshot?.toObject(UserProfile::class.java))

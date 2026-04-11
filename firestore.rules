@@ -15,12 +15,21 @@ service cloud.firestore {
         : null;
     }
 
+    function currentUserData() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data
+        : null;
+    }
+
     function isAdmin() {
-      return currentRole() == 'admin';
+      return currentRole() == 'admin'
+        || (currentUserData() != null && currentUserData().admin == true);
     }
 
     function isWriter() {
-      return currentRole() == 'writer' || isAdmin();
+      return currentRole() == 'writer'
+        || (currentUserData() != null && currentUserData().writer == true)
+        || isAdmin();
     }
 
     function publishedDvar() {

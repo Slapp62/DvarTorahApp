@@ -25,7 +25,10 @@ class ApplicationRepositoryImpl @Inject constructor(
             .whereEqualTo(FirestoreConstants.ApplicationFields.STATUS, FirestoreConstants.ApplicationStatus.PENDING)
             .orderBy(FirestoreConstants.ApplicationFields.SUBMITTED_AT, Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) {
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
                 trySend(snapshot?.toObjects(WriterApplication::class.java) ?: emptyList())
             }
         awaitClose { listener.remove() }
@@ -35,7 +38,10 @@ class ApplicationRepositoryImpl @Inject constructor(
         val listener = collection
             .whereEqualTo(FirestoreConstants.ApplicationFields.APPLICANT_UID, uid)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) {
+                    trySend(null)
+                    return@addSnapshotListener
+                }
                 trySend(snapshot?.documents?.firstOrNull()?.toObject(WriterApplication::class.java))
             }
         awaitClose { listener.remove() }

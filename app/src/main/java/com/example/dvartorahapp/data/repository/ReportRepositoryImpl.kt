@@ -23,7 +23,10 @@ class ReportRepositoryImpl @Inject constructor(
             .whereEqualTo(FirestoreConstants.ReportFields.STATUS, FirestoreConstants.ReportStatus.PENDING)
             .orderBy(FirestoreConstants.ReportFields.SUBMITTED_AT, Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) {
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
                 trySend(snapshot?.toObjects(Report::class.java) ?: emptyList())
             }
         awaitClose { listener.remove() }

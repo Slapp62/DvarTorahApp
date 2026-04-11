@@ -64,14 +64,14 @@ fun ProfileScreen(
                             Text(currentUser.email, style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                             Spacer(modifier = Modifier.height(8.dp))
-                            val roleBadgeColor = when (currentUser.role) {
+                            val roleBadgeColor = when (currentUser.effectiveRole) {
                                 FirestoreConstants.Roles.ADMIN -> MaterialTheme.colorScheme.error
                                 FirestoreConstants.Roles.WRITER -> MaterialTheme.colorScheme.secondary
                                 else -> MaterialTheme.colorScheme.outline
                             }
                             AssistChip(
                                 onClick = {},
-                                label = { Text(currentUser.role.replaceFirstChar { it.uppercase() }) },
+                                label = { Text(currentUser.effectiveRole.replaceFirstChar { it.uppercase() }) },
                                 colors = AssistChipDefaults.assistChipColors(labelColor = roleBadgeColor)
                             )
                         }
