@@ -1,0 +1,30 @@
+*.iml
+.DS_Store
+
+# Gradle and Kotlin build state
+.gradle/
+.gradle-local/
+.kotlin/
+**/build/
+
+# Local machine-specific configuration
+local.properties
+app/google-services.json
+
+# Android Studio / IntelliJ
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+.idea/deviceManager.xml
+.idea/appInsightsSettings.xml
+
+# Native build outputs
+.externalNativeBuild/
+.cxx/
+
+# Android Studio captures
+captures/

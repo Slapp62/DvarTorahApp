@@ -1,0 +1,172 @@
+package com.example.dvartorahapp.data.model
+
+enum class OccasionCategory { PARSHA, YOM_TOV }
+
+enum class ParshaOccasion(
+    val key: String,
+    val displayNameEn: String,
+    val displayNameHe: String,
+    val category: OccasionCategory
+) {
+    // Bereishit
+    BEREISHIT("bereishit", "Bereishit", "בְּרֵאשִׁית", OccasionCategory.PARSHA),
+    NOACH("noach", "Noach", "נֹחַ", OccasionCategory.PARSHA),
+    LECH_LECHA("lech_lecha", "Lech Lecha", "לֶךְ-לְךָ", OccasionCategory.PARSHA),
+    VAYERA("vayera", "Vayera", "וַיֵּרָא", OccasionCategory.PARSHA),
+    CHAYEI_SARA("chayei_sara", "Chayei Sara", "חַיֵּי שָׂרָה", OccasionCategory.PARSHA),
+    TOLDOT("toldot", "Toldot", "תּוֹלְדֹת", OccasionCategory.PARSHA),
+    VAYETZEI("vayetzei", "Vayetzei", "וַיֵּצֵא", OccasionCategory.PARSHA),
+    VAYISHLACH("vayishlach", "Vayishlach", "וַיִּשְׁלַח", OccasionCategory.PARSHA),
+    VAYESHEV("vayeshev", "Vayeshev", "וַיֵּשֶׁב", OccasionCategory.PARSHA),
+    MIKETZ("miketz", "Miketz", "מִקֵּץ", OccasionCategory.PARSHA),
+    VAYIGASH("vayigash", "Vayigash", "וַיִּגַּשׁ", OccasionCategory.PARSHA),
+    VAYECHI("vayechi", "Vayechi", "וַיְחִי", OccasionCategory.PARSHA),
+
+    // Shemot
+    SHEMOT("shemot", "Shemot", "שְׁמוֹת", OccasionCategory.PARSHA),
+    VAERA("vaera", "Vaera", "וָאֵרָא", OccasionCategory.PARSHA),
+    BO("bo", "Bo", "בֹּא", OccasionCategory.PARSHA),
+    BESHALACH("beshalach", "Beshalach", "בְּשַׁלַּח", OccasionCategory.PARSHA),
+    YITRO("yitro", "Yitro", "יִתְרוֹ", OccasionCategory.PARSHA),
+    MISHPATIM("mishpatim", "Mishpatim", "מִּשְׁפָּטִים", OccasionCategory.PARSHA),
+    TERUMAH("terumah", "Terumah", "תְּרוּמָה", OccasionCategory.PARSHA),
+    TETZAVEH("tetzaveh", "Tetzaveh", "תְּצַוֶּה", OccasionCategory.PARSHA),
+    KI_TISA("ki_tisa", "Ki Tisa", "כִּי תִשָּׂא", OccasionCategory.PARSHA),
+    VAYAKHEL("vayakhel", "Vayakhel", "וַיַּקְהֵל", OccasionCategory.PARSHA),
+    PEKUDEI("pekudei", "Pekudei", "פְקוּדֵי", OccasionCategory.PARSHA),
+    VAYAKHEL_PEKUDEI("vayakhel_pekudei", "Vayakhel-Pekudei", "וַיַּקְהֵל־פְקוּדֵי", OccasionCategory.PARSHA),
+
+    // Vayikra
+    VAYIKRA("vayikra", "Vayikra", "וַיִּקְרָא", OccasionCategory.PARSHA),
+    TZAV("tzav", "Tzav", "צַו", OccasionCategory.PARSHA),
+    SHEMINI("shemini", "Shemini", "שְּׁמִינִי", OccasionCategory.PARSHA),
+    TAZRIA("tazria", "Tazria", "תַזְרִיעַ", OccasionCategory.PARSHA),
+    METZORA("metzora", "Metzora", "מְּצֹרָע", OccasionCategory.PARSHA),
+    TAZRIA_METZORA("tazria_metzora", "Tazria-Metzora", "תַזְרִיעַ־מְּצֹרָע", OccasionCategory.PARSHA),
+    ACHAREI_MOT("acharei_mot", "Acharei Mot", "אַחֲרֵי מוֹת", OccasionCategory.PARSHA),
+    KEDOSHIM("kedoshim", "Kedoshim", "קְדֹשִׁים", OccasionCategory.PARSHA),
+    ACHAREI_MOT_KEDOSHIM("acharei_mot_kedoshim", "Acharei Mot-Kedoshim", "אַחֲרֵי מוֹת־קְדֹשִׁים", OccasionCategory.PARSHA),
+    EMOR("emor", "Emor", "אֱמֹר", OccasionCategory.PARSHA),
+    BEHAR("behar", "Behar", "בְּהַר", OccasionCategory.PARSHA),
+    BECHUKOTAI("bechukotai", "Bechukotai", "בְּחֻקֹּתַי", OccasionCategory.PARSHA),
+    BEHAR_BECHUKOTAI("behar_bechukotai", "Behar-Bechukotai", "בְּהַר־בְּחֻקֹּתַי", OccasionCategory.PARSHA),
+
+    // Bamidbar
+    BAMIDBAR("bamidbar", "Bamidbar", "בְּמִדְבַּר", OccasionCategory.PARSHA),
+    NASO("naso", "Naso", "נָשֹׂא", OccasionCategory.PARSHA),
+    BEHAALOTECHA("behaalotecha", "Behaalotecha", "בְּהַעֲלֹתְךָ", OccasionCategory.PARSHA),
+    SHELACH("shelach", "Shelach", "שְׁלַח-לְךָ", OccasionCategory.PARSHA),
+    KORACH("korach", "Korach", "קֹרַח", OccasionCategory.PARSHA),
+    CHUKAT("chukat", "Chukat", "חֻקַּת", OccasionCategory.PARSHA),
+    BALAK("balak", "Balak", "בָּלָק", OccasionCategory.PARSHA),
+    CHUKAT_BALAK("chukat_balak", "Chukat-Balak", "חֻקַּת־בָּלָק", OccasionCategory.PARSHA),
+    PINCHAS("pinchas", "Pinchas", "פִּינְחָס", OccasionCategory.PARSHA),
+    MATOT("matot", "Matot", "מַטּוֹת", OccasionCategory.PARSHA),
+    MASEI("masei", "Masei", "מַסְעֵי", OccasionCategory.PARSHA),
+    MATOT_MASEI("matot_masei", "Matot-Masei", "מַטּוֹת־מַסְעֵי", OccasionCategory.PARSHA),
+
+    // Devarim
+    DEVARIM("devarim", "Devarim", "דְּבָרִים", OccasionCategory.PARSHA),
+    VAETCHANAN("vaetchanan", "Vaetchanan", "וָאֶתְחַנַּן", OccasionCategory.PARSHA),
+    EIKEV("eikev", "Eikev", "עֵקֶב", OccasionCategory.PARSHA),
+    REEH("reeh", "Reeh", "רְאֵה", OccasionCategory.PARSHA),
+    SHOFTIM("shoftim", "Shoftim", "שֹׁפְטִים", OccasionCategory.PARSHA),
+    KI_TEITZEI("ki_teitzei", "Ki Teitzei", "כִּי-תֵצֵא", OccasionCategory.PARSHA),
+    KI_TAVO("ki_tavo", "Ki Tavo", "כִּי-תָבוֹא", OccasionCategory.PARSHA),
+    NITZAVIM("nitzavim", "Nitzavim", "נִצָּבִים", OccasionCategory.PARSHA),
+    VAYEILECH("vayeilech", "Vayeilech", "וַיֵּלֶךְ", OccasionCategory.PARSHA),
+    NITZAVIM_VAYEILECH("nitzavim_vayeilech", "Nitzavim-Vayeilech", "נִצָּבִים־וַיֵּלֶךְ", OccasionCategory.PARSHA),
+    HAAZINU("haazinu", "Haazinu", "הַאֲזִינוּ", OccasionCategory.PARSHA),
+    VEZOT_HABRACHA("vezot_habracha", "Vezot HaBracha", "וְזֹאת הַבְּרָכָה", OccasionCategory.PARSHA),
+
+    // Yom Tov
+    ROSH_HASHANA("rosh_hashana", "Rosh Hashana", "רֹאשׁ הַשָּׁנָה", OccasionCategory.YOM_TOV),
+    YOM_KIPPUR("yom_kippur", "Yom Kippur", "יוֹם כִּפּוּר", OccasionCategory.YOM_TOV),
+    SUKKOT("sukkot", "Sukkot", "סוּכּוֹת", OccasionCategory.YOM_TOV),
+    SHEMINI_ATZERET("shemini_atzeret", "Shemini Atzeret", "שְׁמִינִי עֲצֶרֶת", OccasionCategory.YOM_TOV),
+    SIMCHAT_TORAH("simchat_torah", "Simchat Torah", "שִׂמְחַת תּוֹרָה", OccasionCategory.YOM_TOV),
+    CHANUKAH("chanukah", "Chanukah", "חֲנֻכָּה", OccasionCategory.YOM_TOV),
+    PURIM("purim", "Purim", "פּוּרִים", OccasionCategory.YOM_TOV),
+    PESACH("pesach", "Pesach", "פֶּסַח", OccasionCategory.YOM_TOV),
+    SHAVUOT("shavuot", "Shavuot", "שָׁבוּעוֹת", OccasionCategory.YOM_TOV);
+
+    companion object {
+        fun fromKey(key: String): ParshaOccasion? = entries.find { it.key == key }
+
+        fun fromHebcalName(name: String): ParshaOccasion? {
+            val normalized = name
+                .lowercase()
+                .replace("’", "")
+                .replace("'", "")
+                .replace("-", "_")
+                .replace(" ", "_")
+                .replace(",", "_")
+                .replace("__", "_")
+
+            return when (normalized) {
+                "bereshit" -> BEREISHIT
+                "noach" -> NOACH
+                "lech_lecha" -> LECH_LECHA
+                "vayera" -> VAYERA
+                "chayei_sara" -> CHAYEI_SARA
+                "toldot" -> TOLDOT
+                "vayetzei" -> VAYETZEI
+                "vayishlach" -> VAYISHLACH
+                "vayeshev" -> VAYESHEV
+                "miketz" -> MIKETZ
+                "vayigash" -> VAYIGASH
+                "vayechi" -> VAYECHI
+                "shemot" -> SHEMOT
+                "vaera" -> VAERA
+                "bo" -> BO
+                "beshalach" -> BESHALACH
+                "yitro" -> YITRO
+                "mishpatim" -> MISHPATIM
+                "terumah" -> TERUMAH
+                "tetzaveh" -> TETZAVEH
+                "ki_tisa" -> KI_TISA
+                "vayakhel" -> VAYAKHEL
+                "pekudei" -> PEKUDEI
+                "vayakhel_pekudei" -> VAYAKHEL_PEKUDEI
+                "vayikra" -> VAYIKRA
+                "tzav" -> TZAV
+                "shemini", "shmini" -> SHEMINI
+                "tazria" -> TAZRIA
+                "metzora" -> METZORA
+                "tazria_metzora" -> TAZRIA_METZORA
+                "acharei_mot" -> ACHAREI_MOT
+                "kedoshim" -> KEDOSHIM
+                "acharei_mot_kedoshim" -> ACHAREI_MOT_KEDOSHIM
+                "emor" -> EMOR
+                "behar" -> BEHAR
+                "bechukotai" -> BECHUKOTAI
+                "behar_bechukotai" -> BEHAR_BECHUKOTAI
+                "bamidbar" -> BAMIDBAR
+                "naso" -> NASO
+                "behaalotecha" -> BEHAALOTECHA
+                "shelach", "shelach_lecha" -> SHELACH
+                "korach" -> KORACH
+                "chukat", "hukat" -> CHUKAT
+                "balak" -> BALAK
+                "chukat_balak", "hukat_balak" -> CHUKAT_BALAK
+                "pinchas" -> PINCHAS
+                "matot" -> MATOT
+                "masei" -> MASEI
+                "matot_masei" -> MATOT_MASEI
+                "devarim" -> DEVARIM
+                "vaetchanan" -> VAETCHANAN
+                "eikev", "ekev" -> EIKEV
+                "reeh", "reeh" -> REEH
+                "shoftim" -> SHOFTIM
+                "ki_teitzei" -> KI_TEITZEI
+                "ki_tavo" -> KI_TAVO
+                "nitzavim" -> NITZAVIM
+                "vayeilech" -> VAYEILECH
+                "nitzavim_vayeilech" -> NITZAVIM_VAYEILECH
+                "haazinu" -> HAAZINU
+                "vezot_habracha", "vezot_haberakhah" -> VEZOT_HABRACHA
+                else -> null
+            }
+        }
+    }
+}

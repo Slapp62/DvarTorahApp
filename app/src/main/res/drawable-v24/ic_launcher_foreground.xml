@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Torah scroll (Sefer Torah) — front view.
+    Canvas: 108×108. Safe zone: 18–90.
+    Layout:
+      Left handle  (etz chaim): x 24–34, y 18–90
+      Right handle (etz chaim): x 74–84, y 18–90
+      Parchment body:           x 34–74, y 26–82
+      Text lines on parchment:  3 lines suggesting writing
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Left handle — rounded top and bottom -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M29,18 Q34,18 34,23 L34,85 Q34,90 29,90 Q24,90 24,85 L24,23 Q24,18 29,18 Z" />
+
+    <!-- Right handle — rounded top and bottom -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M79,18 Q84,18 84,23 L84,85 Q84,90 79,90 Q74,90 74,85 L74,23 Q74,18 79,18 Z" />
+
+    <!-- Parchment / scroll body — warm off-white -->
+    <path
+        android:fillColor="#F5ECD7"
+        android:pathData="M34,26 L74,26 L74,82 L34,82 Z" />
+
+    <!-- Writing lines on parchment (navy, suggesting text) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#0F2744"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:pathData="M40,42 L68,42" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#0F2744"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:pathData="M40,54 L68,54" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#0F2744"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:pathData="M40,66 L60,66" />
+
+</vector>
