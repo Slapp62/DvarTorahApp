@@ -21,6 +21,7 @@ app/google-services.json
 .idea/deploymentTargetSelector.xml
 .idea/deviceManager.xml
 .idea/appInsightsSettings.xml
+.idea/vcs.xml
 
 # Native build outputs
 .externalNativeBuild/
