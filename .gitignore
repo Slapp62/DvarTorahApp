@@ -4,6 +4,7 @@
 # Gradle and Kotlin build state
 .gradle/
 .gradle-local/
+.android-local/
 .kotlin/
 **/build/
 

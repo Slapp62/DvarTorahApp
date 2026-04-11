@@ -2,6 +2,7 @@ package com.example.dvartorahapp.data.model
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.ServerTimestamp
 import com.example.dvartorahapp.data.remote.FirestoreConstants
 
@@ -16,6 +17,7 @@ data class UserProfile(
     val profileImageUrl: String? = null,
     @ServerTimestamp val createdAt: Timestamp? = null
 ) {
+    @get:Exclude
     val effectiveRole: String
         get() = when {
             role == FirestoreConstants.Roles.ADMIN || admin -> FirestoreConstants.Roles.ADMIN
@@ -23,7 +25,10 @@ data class UserProfile(
             else -> FirestoreConstants.Roles.VIEWER
         }
 
+    @get:Exclude
     val isWriter: Boolean get() = effectiveRole == FirestoreConstants.Roles.WRITER || effectiveRole == FirestoreConstants.Roles.ADMIN
+    @get:Exclude
     val isAdmin: Boolean get() = effectiveRole == FirestoreConstants.Roles.ADMIN
+    @get:Exclude
     val isViewer: Boolean get() = effectiveRole == FirestoreConstants.Roles.VIEWER
 }
