@@ -119,5 +119,10 @@ service cloud.firestore {
         || (signedIn() && resource.data.reporterUid == request.auth.uid)
         || (signedIn() && resource.data.dvarAuthorUid == request.auth.uid);
     }
+
+    match /external_submissions/{submissionId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isAdmin();
+    }
   }
 }

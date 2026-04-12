@@ -71,6 +71,30 @@ class DvarTorahRepositoryImpl @Inject constructor(
         ref.id
     }
 
+    override suspend fun createAdminPublishedDvarTorah(
+        title: String,
+        occasion: String,
+        authorName: String,
+        authorUid: String,
+        body: String,
+        sources: String
+    ): Result<String> = runCatching {
+        val ref = collection.document()
+        ref.set(
+            DvarTorah(
+                id = ref.id,
+                title = title.trim(),
+                occasion = occasion,
+                authorUid = authorUid,
+                authorName = authorName.trim(),
+                body = body.trim(),
+                sources = sources.trim(),
+                status = FirestoreConstants.DvarTorahStatus.PUBLISHED
+            )
+        ).await()
+        ref.id
+    }
+
     override suspend fun updateDvarTorah(dvarTorah: DvarTorah): Result<Unit> = runCatching {
         val updates = mapOf(
             FirestoreConstants.DvarTorahFields.TITLE to dvarTorah.title,

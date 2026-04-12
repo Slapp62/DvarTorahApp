@@ -30,4 +30,10 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindReportRepository(impl: ReportRepositoryImpl): ReportRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindExternalSubmissionRepository(
+        impl: ExternalSubmissionRepositoryImpl
+    ): ExternalSubmissionRepository
 }

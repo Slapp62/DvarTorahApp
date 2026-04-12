@@ -190,6 +190,7 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
                 } else {
                     WriterApplicationScreen(
                         onNavigateBack = { navController.popBackStack() },
+                        onNavigateToContentPolicy = { navController.navigate(Screen.ContentPolicy.route) },
                         currentUser = user
                     )
                 }

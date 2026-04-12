@@ -45,10 +45,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.dvartorahapp.data.model.ExternalSubmission
 import com.example.dvartorahapp.data.model.Report
 import com.example.dvartorahapp.data.model.UserProfile
 import com.example.dvartorahapp.data.model.WriterApplication
@@ -76,7 +78,10 @@ fun AdminPanelScreen(
     val pendingApplications by viewModel.pendingApplications.collectAsStateWithLifecycle()
     val pendingReports by viewModel.pendingReports.collectAsStateWithLifecycle()
     val reviewedReports by viewModel.reviewedReports.collectAsStateWithLifecycle()
+    val pendingExternalSubmissions by viewModel.pendingExternalSubmissions.collectAsStateWithLifecycle()
+    val reviewedExternalSubmissions by viewModel.reviewedExternalSubmissions.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val uriHandler = LocalUriHandler.current
     var selectedTab by remember { mutableIntStateOf(0) }
     var reviewedFilter by remember { mutableStateOf(ReviewedFilter.ALL) }
     val filteredReviewedReports = remember(reviewedReports, reviewedFilter) {
@@ -181,7 +186,13 @@ fun AdminPanelScreen(
                     Tab(
                         selected = selectedTab == 2,
                         onClick = { selectedTab = 2 },
-                        text = { Text("Reviewed (${reviewedReports.size})") },
+                        text = { Text("Desktop (${pendingExternalSubmissions.size})") },
+                        icon = { Icon(Icons.Outlined.HowToReg, contentDescription = null) }
+                    )
+                    Tab(
+                        selected = selectedTab == 3,
+                        onClick = { selectedTab = 3 },
+                        text = { Text("Reviewed (${reviewedReports.size + reviewedExternalSubmissions.size})") },
                         icon = { Icon(Icons.Outlined.Flag, contentDescription = null) }
                     )
                 }
@@ -237,10 +248,42 @@ fun AdminPanelScreen(
                     }
 
                     2 -> {
-                        if (reviewedReports.isEmpty()) {
+                        if (pendingExternalSubmissions.isEmpty()) {
                             AdminEmptyState(
-                                title = "No reviewed reports",
-                                description = "Reviewed reports will appear here."
+                                title = "No desktop submissions",
+                                description = "Pending computer submissions will appear here."
+                            )
+                        } else {
+                            LazyColumn(
+                                contentPadding = PaddingValues(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                items(pendingExternalSubmissions, key = { it.id }) { submission ->
+                                    ExternalSubmissionCard(
+                                        submission = submission,
+                                        isReviewed = false,
+                                        onOpenDoc = {
+                                            if (submission.documentUrl.isNotBlank()) {
+                                                uriHandler.openUri(submission.documentUrl)
+                                            }
+                                        },
+                                        onPublish = { note ->
+                                            viewModel.publishExternalSubmission(submission, currentUser.uid, note)
+                                        },
+                                        onReject = { note ->
+                                            viewModel.rejectExternalSubmission(submission, currentUser.uid, note)
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    3 -> {
+                        if (reviewedReports.isEmpty() && reviewedExternalSubmissions.isEmpty()) {
+                            AdminEmptyState(
+                                title = "No reviewed items",
+                                description = "Reviewed reports and desktop submissions will appear here."
                             )
                         } else {
                             LazyColumn(
@@ -269,10 +312,166 @@ fun AdminPanelScreen(
                                         onReopen = { viewModel.reopenReport(report) }
                                     )
                                 }
+                                items(reviewedExternalSubmissions, key = { "external_${it.id}" }) { submission ->
+                                    ExternalSubmissionCard(
+                                        submission = submission,
+                                        isReviewed = true,
+                                        onOpenDoc = {
+                                            if (submission.documentUrl.isNotBlank()) {
+                                                uriHandler.openUri(submission.documentUrl)
+                                            }
+                                        },
+                                        onPublish = { },
+                                        onReject = { },
+                                        onSaveNote = { note ->
+                                            viewModel.saveExternalSubmissionNote(submission, note)
+                                        },
+                                        onReopen = {
+                                            viewModel.reopenExternalSubmission(submission)
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
                 }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExternalSubmissionCard(
+    submission: ExternalSubmission,
+    isReviewed: Boolean,
+    onOpenDoc: () -> Unit,
+    onPublish: (String) -> Unit,
+    onReject: (String) -> Unit,
+    onSaveNote: ((String) -> Unit)? = null,
+    onReopen: (() -> Unit)? = null
+) {
+    val submittedAt = remember(submission.submittedAt) { submission.submittedAt?.toDate()?.let(::formatAdminDate) }
+    val reviewedAt = remember(submission.reviewedAt) { submission.reviewedAt?.toDate()?.let(::formatAdminDate) }
+    EditorialPanel {
+        Column(
+            modifier = Modifier
+                .animateContentSize()
+                .padding(horizontal = 18.dp, vertical = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = submission.title.ifBlank { "Untitled desktop submission" },
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = submission.parshaOccasion?.displayNameEn ?: submission.occasion.ifBlank { "No parsha selected" },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = buildString {
+                    append(submission.submitterName.ifBlank { "Unknown submitter" })
+                    if (submission.submitterEmail.isNotBlank()) {
+                        append(" • ")
+                        append(submission.submitterEmail)
+                    }
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = submission.body,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (submission.sources.isNotBlank()) {
+                Text(
+                    text = "Sources: ${submission.sources}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (submission.documentUrl.isNotBlank()) {
+                Text(
+                    text = submission.documentUrl,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Text(
+                text = "Status: ${submission.status.replaceFirstChar { it.uppercase() }}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            submittedAt?.let {
+                Text(
+                    text = "Submitted $it",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            reviewedAt?.let {
+                Text(
+                    text = "Reviewed $it",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (submission.publishedDvarId.isNotBlank()) {
+                Text(
+                    text = "Published Dvar ID: ${submission.publishedDvarId}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            var noteText by remember(submission.id, submission.adminNote) { mutableStateOf(submission.adminNote) }
+            OutlinedTextField(
+                value = noteText,
+                onValueChange = { noteText = it },
+                label = { Text("Admin note") },
+                modifier = Modifier.fillMaxWidth(),
+                minLines = if (isReviewed) 2 else 3
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (submission.documentUrl.isNotBlank()) {
+                    OutlinedButton(
+                        onClick = onOpenDoc,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Open doc")
+                    }
+                }
+                if (!isReviewed) {
+                    Button(
+                        onClick = { onPublish(noteText) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Publish")
+                    }
+                }
+            }
+            if (!isReviewed) {
+                OutlinedButton(
+                    onClick = { onReject(noteText) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Reject")
+                }
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = { onSaveNote?.invoke(noteText) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Save note")
+                    }
+                    OutlinedButton(
+                        onClick = { onReopen?.invoke() },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Reopen")
+                    }
                 }
             }
         }

@@ -11,11 +11,9 @@ import com.example.dvartorahapp.data.repository.DvarTorahRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 sealed class FeedParshaFilter {
     data object Current : FeedParshaFilter()
@@ -85,14 +83,9 @@ class FeedViewModel @Inject constructor(
         }
     }.flatMapLatest { occasion ->
             repository.getPublishedDvareiTorah(occasion?.key)
-                .timeout(15.seconds)
                 .map<List<DvarTorah>, FeedUiState> { FeedUiState.Success(it, occasion) }
                 .catch { e ->
-                    if (e is TimeoutCancellationException) {
-                        emit(FeedUiState.Error("Could not connect. Check your internet connection."))
-                    } else {
-                        emit(FeedUiState.Error(e.message ?: "Could not load Divrei Torah"))
-                    }
+                    emit(FeedUiState.Error(e.message ?: "Could not load Divrei Torah"))
                 }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FeedUiState.Loading)

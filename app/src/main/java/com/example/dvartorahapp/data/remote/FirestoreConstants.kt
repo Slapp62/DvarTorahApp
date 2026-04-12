@@ -6,6 +6,7 @@ object FirestoreConstants {
     const val COLLECTION_LIKES = "likes"
     const val COLLECTION_WRITER_APPLICATIONS = "writer_applications"
     const val COLLECTION_REPORTS = "reports"
+    const val COLLECTION_EXTERNAL_SUBMISSIONS = "external_submissions"
 
     object UserFields {
         const val DISPLAY_NAME = "displayName"
@@ -54,6 +55,22 @@ object FirestoreConstants {
         const val SUBMITTED_AT = "submittedAt"
     }
 
+    object ExternalSubmissionFields {
+        const val SUBMITTER_NAME = "submitterName"
+        const val SUBMITTER_EMAIL = "submitterEmail"
+        const val TITLE = "title"
+        const val OCCASION = "occasion"
+        const val BODY = "body"
+        const val SOURCES = "sources"
+        const val DOCUMENT_URL = "documentUrl"
+        const val STATUS = "status"
+        const val SUBMITTED_AT = "submittedAt"
+        const val REVIEWED_AT = "reviewedAt"
+        const val REVIEWED_BY = "reviewedBy"
+        const val ADMIN_NOTE = "adminNote"
+        const val PUBLISHED_DVAR_ID = "publishedDvarId"
+    }
+
     object Roles {
         const val VIEWER = "viewer"
         const val WRITER = "writer"
@@ -76,5 +93,11 @@ object FirestoreConstants {
         const val PENDING = "pending"
         const val ACTIONED = "actioned"
         const val DISMISSED = "dismissed"
+    }
+
+    object ExternalSubmissionStatus {
+        const val PENDING = "pending"
+        const val PUBLISHED = "published"
+        const val REJECTED = "rejected"
     }
 }

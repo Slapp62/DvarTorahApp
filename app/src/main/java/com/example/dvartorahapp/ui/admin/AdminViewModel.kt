@@ -2,11 +2,13 @@ package com.example.dvartorahapp.ui.admin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dvartorahapp.data.model.ExternalSubmission
 import com.example.dvartorahapp.data.model.Report
 import com.example.dvartorahapp.data.model.WriterApplication
 import com.example.dvartorahapp.data.remote.FirestoreConstants
 import com.example.dvartorahapp.data.repository.ApplicationRepository
 import com.example.dvartorahapp.data.repository.DvarTorahRepository
+import com.example.dvartorahapp.data.repository.ExternalSubmissionRepository
 import com.example.dvartorahapp.data.repository.ReportRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -22,7 +24,8 @@ sealed class AdminUiEffect {
 class AdminViewModel @Inject constructor(
     private val applicationRepository: ApplicationRepository,
     private val reportRepository: ReportRepository,
-    private val dvarTorahRepository: DvarTorahRepository
+    private val dvarTorahRepository: DvarTorahRepository,
+    private val externalSubmissionRepository: ExternalSubmissionRepository
 ) : ViewModel() {
 
     val pendingApplications: StateFlow<List<WriterApplication>> = applicationRepository
@@ -35,6 +38,14 @@ class AdminViewModel @Inject constructor(
 
     val reviewedReports: StateFlow<List<Report>> = reportRepository
         .getReviewedReports()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val pendingExternalSubmissions: StateFlow<List<ExternalSubmission>> = externalSubmissionRepository
+        .getPendingSubmissions()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val reviewedExternalSubmissions: StateFlow<List<ExternalSubmission>> = externalSubmissionRepository
+        .getReviewedSubmissions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _effect = Channel<AdminUiEffect>()
@@ -147,6 +158,65 @@ class AdminViewModel @Inject constructor(
             reportRepository.reopenReport(report.id).fold(
                 onSuccess = { _effect.send(AdminUiEffect.ShowMessage("Report reopened")) },
                 onFailure = { _effect.send(AdminUiEffect.ShowMessage("Could not reopen report: ${it.message}")) }
+            )
+        }
+    }
+
+    fun publishExternalSubmission(submission: ExternalSubmission, reviewerUid: String, adminNote: String) {
+        viewModelScope.launch {
+            val derivedAuthorUid = submission.submitterEmail
+                .trim()
+                .lowercase()
+                .ifBlank { "external:${submission.id}" }
+                .let { "external:$it" }
+
+            dvarTorahRepository.createAdminPublishedDvarTorah(
+                title = submission.title,
+                occasion = submission.occasion,
+                authorName = submission.submitterName,
+                authorUid = derivedAuthorUid,
+                body = submission.body,
+                sources = submission.sources
+            ).fold(
+                onSuccess = { publishedDvarId ->
+                    externalSubmissionRepository.markPublished(
+                        submissionId = submission.id,
+                        reviewerUid = reviewerUid,
+                        publishedDvarId = publishedDvarId,
+                        adminNote = adminNote
+                    ).fold(
+                        onSuccess = { _effect.send(AdminUiEffect.ShowMessage("Desktop submission published")) },
+                        onFailure = { _effect.send(AdminUiEffect.ShowMessage("Published, but could not update submission: ${it.message}")) }
+                    )
+                },
+                onFailure = { _effect.send(AdminUiEffect.ShowMessage("Could not publish submission: ${it.message}")) }
+            )
+        }
+    }
+
+    fun rejectExternalSubmission(submission: ExternalSubmission, reviewerUid: String, adminNote: String) {
+        viewModelScope.launch {
+            externalSubmissionRepository.rejectSubmission(submission.id, reviewerUid, adminNote).fold(
+                onSuccess = { _effect.send(AdminUiEffect.ShowMessage("Desktop submission rejected")) },
+                onFailure = { _effect.send(AdminUiEffect.ShowMessage("Could not reject submission: ${it.message}")) }
+            )
+        }
+    }
+
+    fun saveExternalSubmissionNote(submission: ExternalSubmission, adminNote: String) {
+        viewModelScope.launch {
+            externalSubmissionRepository.updateAdminNote(submission.id, adminNote).fold(
+                onSuccess = { _effect.send(AdminUiEffect.ShowMessage("Submission note saved")) },
+                onFailure = { _effect.send(AdminUiEffect.ShowMessage("Could not save submission note: ${it.message}")) }
+            )
+        }
+    }
+
+    fun reopenExternalSubmission(submission: ExternalSubmission) {
+        viewModelScope.launch {
+            externalSubmissionRepository.reopenSubmission(submission.id).fold(
+                onSuccess = { _effect.send(AdminUiEffect.ShowMessage("Desktop submission reopened")) },
+                onFailure = { _effect.send(AdminUiEffect.ShowMessage("Could not reopen submission: ${it.message}")) }
             )
         }
     }

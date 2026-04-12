@@ -47,9 +47,13 @@ class WriterApplicationViewModel @Inject constructor(
         }
     }
 
-    fun submitApplication(user: UserProfile, motivation: String) {
+    fun submitApplication(user: UserProfile, motivation: String, agreedToContentPolicy: Boolean) {
         if (motivation.isBlank()) {
             viewModelScope.launch { _effect.send(ApplyUiEffect.ShowError("Please tell us why you want to write")) }
+            return
+        }
+        if (!agreedToContentPolicy) {
+            viewModelScope.launch { _effect.send(ApplyUiEffect.ShowError("Please agree to the content policy before applying")) }
             return
         }
         val existingApplication = _currentApplication.value

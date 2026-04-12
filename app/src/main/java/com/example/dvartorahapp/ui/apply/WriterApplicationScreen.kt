@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -51,6 +52,7 @@ import com.example.dvartorahapp.ui.components.LoadingOverlay
 @Composable
 fun WriterApplicationScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToContentPolicy: () -> Unit = {},
     currentUser: UserProfile,
     viewModel: WriterApplicationViewModel = hiltViewModel()
 ) {
@@ -59,6 +61,7 @@ fun WriterApplicationScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var motivation by remember { mutableStateOf("") }
     var submitted by remember { mutableStateOf(false) }
+    var agreedToContentPolicy by remember { mutableStateOf(false) }
 
     LaunchedEffect(currentUser.uid) {
         viewModel.loadApplication(currentUser.uid)
@@ -222,8 +225,35 @@ fun WriterApplicationScreen(
                                         )
                                     }
 
+                                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        androidx.compose.foundation.layout.Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Checkbox(
+                                                checked = agreedToContentPolicy,
+                                                onCheckedChange = { agreedToContentPolicy = it }
+                                            )
+                                            Text(
+                                                text = "I agree to follow the content policy.",
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSurface
+                                            )
+                                        }
+                                        androidx.compose.material3.TextButton(
+                                            onClick = onNavigateToContentPolicy
+                                        ) {
+                                            Text("Read content policy")
+                                        }
+                                    }
+
                                     Button(
-                                        onClick = { viewModel.submitApplication(currentUser, motivation) },
+                                        onClick = {
+                                            viewModel.submitApplication(
+                                                currentUser,
+                                                motivation,
+                                                agreedToContentPolicy
+                                            )
+                                        },
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .height(48.dp)
