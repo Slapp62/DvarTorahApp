@@ -12,6 +12,6 @@ Suggested content:
   - likes
   - authored Divrei Torah
 - If a deletion attempt fails because the session is too old, the user should sign in again and retry.
-- Support contact: add your real support email here.
+- Support contact: simchalapp@gmail.com
 
 Do not submit to Play with this draft as-is.

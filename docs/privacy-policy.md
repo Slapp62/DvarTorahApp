@@ -23,6 +23,6 @@ Suggested sections:
 - How users can request deletion
   - in-app deletion from Profile
   - external deletion/contact URL
-- Contact information
+- Contact information: simchalapp@gmail.com
 
 Do not submit to Play with this draft as-is.
