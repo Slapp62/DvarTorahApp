@@ -50,6 +50,9 @@ fun ProfileScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToApply: () -> Unit,
     onNavigateToDvar: (String) -> Unit,
+    onNavigateToPrivacyPolicy: () -> Unit,
+    onNavigateToAccountDeletionPolicy: () -> Unit,
+    onNavigateToContentPolicy: () -> Unit,
     onSignOut: () -> Unit,
     onParshaScheduleModeChange: (ParshaScheduleMode) -> Unit,
     onManageAdPrivacy: () -> Unit,
@@ -186,11 +189,29 @@ fun ProfileScreen(
                             ) {
                                 Text(if (isDeletingAccount) "Deleting account..." else "Delete account")
                             }
+                            OutlinedButton(
+                                onClick = onNavigateToPrivacyPolicy,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Privacy policy")
+                            }
+                            OutlinedButton(
+                                onClick = onNavigateToAccountDeletionPolicy,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Account deletion policy")
+                            }
+                            OutlinedButton(
+                                onClick = onNavigateToContentPolicy,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Content policy")
+                            }
                         }
                     }
                 }
 
-                if (currentUser.isViewer && userApplication?.status != FirestoreConstants.ApplicationStatus.PENDING) {
+                if (currentUser.isViewerOnly && userApplication?.status != FirestoreConstants.ApplicationStatus.PENDING) {
                     item {
                         OutlinedButton(
                             onClick = onNavigateToApply,
@@ -202,7 +223,7 @@ fun ProfileScreen(
                     }
                 }
 
-                if (currentUser.isViewer && userApplication != null) {
+                if (currentUser.isViewerOnly && userApplication != null) {
                     item {
                         val message = when (userApplication.status) {
                             FirestoreConstants.ApplicationStatus.PENDING ->

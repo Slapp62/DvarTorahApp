@@ -58,6 +58,7 @@ fun LoginScreen(
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalContext.current.findActivity()
+    val googleConfigured = viewModel.isGoogleSignInConfigured
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -157,11 +158,18 @@ fun LoginScreen(
                             }
 
                             OutlinedGoogleButton(
-                                onClick = {
-                                    activity?.let(viewModel::signInWithGoogle)
-                                },
-                                modifier = Modifier.fillMaxWidth()
+                                onClick = { viewModel.signInWithGoogle(activity) },
+                                modifier = Modifier.fillMaxWidth(),
+                                enabled = googleConfigured
                             )
+
+                            if (!googleConfigured) {
+                                Text(
+                                    text = "Google sign-in will work after Firebase Google Auth is configured.",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
 
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
@@ -190,11 +198,16 @@ fun LoginScreen(
 }
 
 @Composable
-private fun OutlinedGoogleButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun OutlinedGoogleButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
     androidx.compose.material3.OutlinedButton(
         onClick = onClick,
         modifier = modifier.height(48.dp),
-        shape = ButtonShape
+        shape = ButtonShape,
+        enabled = enabled
     ) {
         Text("Continue with Google", style = MaterialTheme.typography.labelLarge)
     }

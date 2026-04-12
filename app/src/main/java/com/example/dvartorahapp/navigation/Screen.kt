@@ -14,4 +14,7 @@ sealed class Screen(val route: String) {
     object WriterApply : Screen("apply")
     object Profile : Screen("profile")
     object AdminPanel : Screen("admin")
+    object PrivacyPolicy : Screen("privacy-policy")
+    object AccountDeletionPolicy : Screen("account-deletion-policy")
+    object ContentPolicy : Screen("content-policy")
 }

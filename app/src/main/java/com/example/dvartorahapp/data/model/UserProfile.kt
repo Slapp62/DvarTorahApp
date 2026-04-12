@@ -26,9 +26,9 @@ data class UserProfile(
         }
 
     @get:Exclude
-    val isWriter: Boolean get() = effectiveRole == FirestoreConstants.Roles.WRITER || effectiveRole == FirestoreConstants.Roles.ADMIN
+    val hasWriterAccess: Boolean get() = effectiveRole == FirestoreConstants.Roles.WRITER || effectiveRole == FirestoreConstants.Roles.ADMIN
     @get:Exclude
-    val isAdmin: Boolean get() = effectiveRole == FirestoreConstants.Roles.ADMIN
+    val hasAdminAccess: Boolean get() = effectiveRole == FirestoreConstants.Roles.ADMIN
     @get:Exclude
-    val isViewer: Boolean get() = effectiveRole == FirestoreConstants.Roles.VIEWER
+    val isViewerOnly: Boolean get() = effectiveRole == FirestoreConstants.Roles.VIEWER
 }

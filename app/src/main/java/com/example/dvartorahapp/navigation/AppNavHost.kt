@@ -31,6 +31,8 @@ import com.example.dvartorahapp.ui.auth.RegisterScreen
 import com.example.dvartorahapp.ui.detail.DvarTorahDetailScreen
 import com.example.dvartorahapp.ui.feed.FeedScreen
 import com.example.dvartorahapp.ui.components.BannerAdBar
+import com.example.dvartorahapp.ui.policy.PolicyContent
+import com.example.dvartorahapp.ui.policy.PolicyScreen
 import com.example.dvartorahapp.ui.profile.ProfileScreen
 import com.example.dvartorahapp.ui.profile.ProfileViewModel
 import com.example.dvartorahapp.ui.write.WriteScreen
@@ -55,8 +57,8 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
 
     val navItems = buildList {
         add(NavItem("Feed", Icons.Filled.Home, Screen.Feed.route))
-        if (currentUser?.isWriter == true) add(NavItem("Write", Icons.Outlined.Edit, Screen.WriteCreate.route))
-        if (currentUser?.isAdmin == true) add(NavItem("Admin", Icons.Filled.Settings, Screen.AdminPanel.route))
+        if (currentUser?.hasWriterAccess == true) add(NavItem("Write", Icons.Outlined.Edit, Screen.WriteCreate.route))
+        if (currentUser?.hasAdminAccess == true) add(NavItem("Admin", Icons.Filled.Settings, Screen.AdminPanel.route))
         add(NavItem("Profile", Icons.Filled.Person, Screen.Profile.route))
     }
 
@@ -159,7 +161,7 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
 
             composable(Screen.WriteCreate.route) {
                 val user = currentUser
-                if (user == null || !user.isWriter) {
+                if (user == null || !user.hasWriterAccess) {
                     navController.popBackStack()
                 } else {
                     WriteScreen(
@@ -171,7 +173,7 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
 
             composable(Screen.WriteEdit.route) {
                 val user = currentUser
-                if (user == null || !user.isWriter) {
+                if (user == null || !user.hasWriterAccess) {
                     navController.popBackStack()
                 } else {
                     WriteScreen(
@@ -204,6 +206,9 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
                     onNavigateToLogin = { navController.navigate(Screen.Login.route) },
                     onNavigateToApply = { navController.navigate(Screen.WriterApply.route) },
                     onNavigateToDvar = { navController.navigate(Screen.DvarDetail.createRoute(it)) },
+                    onNavigateToPrivacyPolicy = { navController.navigate(Screen.PrivacyPolicy.route) },
+                    onNavigateToAccountDeletionPolicy = { navController.navigate(Screen.AccountDeletionPolicy.route) },
+                    onNavigateToContentPolicy = { navController.navigate(Screen.ContentPolicy.route) },
                     onSignOut = { authViewModel.signOut() },
                     onParshaScheduleModeChange = profileViewModel::setParshaScheduleMode,
                     onManageAdPrivacy = {
@@ -219,9 +224,36 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
                 )
             }
 
+            composable(Screen.PrivacyPolicy.route) {
+                PolicyScreen(
+                    title = "Privacy Policy",
+                    intro = "This policy explains what information ShabbosVorts collects, how it is used, and what choices users have.",
+                    sections = PolicyContent.privacySections,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Screen.AccountDeletionPolicy.route) {
+                PolicyScreen(
+                    title = "Account Deletion",
+                    intro = "This page explains how account deletion works in ShabbosVorts and what data is removed.",
+                    sections = PolicyContent.accountDeletionSections,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Screen.ContentPolicy.route) {
+                PolicyScreen(
+                    title = "Content Policy",
+                    intro = "ShabbosVorts is intended for thoughtful Torah learning. This policy explains what belongs in the app and what does not.",
+                    sections = PolicyContent.contentPolicySections,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+
             composable(Screen.AdminPanel.route) {
                 val user = currentUser
-                if (user == null || !user.isAdmin) {
+                if (user == null || !user.hasAdminAccess) {
                     navController.popBackStack()
                 } else {
                     AdminPanelScreen(

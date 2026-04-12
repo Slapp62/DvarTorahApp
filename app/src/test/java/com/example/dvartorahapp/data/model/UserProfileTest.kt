@@ -12,9 +12,9 @@ class UserProfileTest {
         val profile = UserProfile(role = FirestoreConstants.Roles.VIEWER, admin = true)
 
         assertEquals(FirestoreConstants.Roles.ADMIN, profile.effectiveRole)
-        assertTrue(profile.isAdmin)
-        assertTrue(profile.isWriter)
-        assertFalse(profile.isViewer)
+        assertTrue(profile.hasAdminAccess)
+        assertTrue(profile.hasWriterAccess)
+        assertFalse(profile.isViewerOnly)
     }
 
     @Test
@@ -22,8 +22,8 @@ class UserProfileTest {
         val profile = UserProfile(role = FirestoreConstants.Roles.WRITER)
 
         assertEquals(FirestoreConstants.Roles.WRITER, profile.effectiveRole)
-        assertTrue(profile.isWriter)
-        assertFalse(profile.isAdmin)
-        assertFalse(profile.isViewer)
+        assertTrue(profile.hasWriterAccess)
+        assertFalse(profile.hasAdminAccess)
+        assertFalse(profile.isViewerOnly)
     }
 }

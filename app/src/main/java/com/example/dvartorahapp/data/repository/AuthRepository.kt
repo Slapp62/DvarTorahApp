@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
     val currentUser: FirebaseUser?
+    fun isGoogleSignInConfigured(): Boolean
     fun authStateFlow(): Flow<FirebaseUser?>
     suspend fun signIn(email: String, password: String): Result<FirebaseUser>
     suspend fun signInWithGoogle(activity: Activity): Result<FirebaseUser>

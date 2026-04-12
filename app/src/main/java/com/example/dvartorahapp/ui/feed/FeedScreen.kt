@@ -161,7 +161,7 @@ fun FeedScreen(
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
-                                text = "Browse by parsha",
+                                text = selectorLabel,
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier

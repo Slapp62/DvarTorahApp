@@ -26,11 +26,13 @@ class LoginViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
+    val isGoogleSignInConfigured: Boolean = authRepository.isGoogleSignInConfigured()
 
     private val _effect = Channel<LoginUiEffect>()
     val effect = _effect.receiveAsFlow()
 
     fun signIn(email: String, password: String) {
+        if (_isLoading.value) return
         if (email.isBlank() || password.isBlank()) {
             viewModelScope.launch { _effect.send(LoginUiEffect.ShowError("Enter your email and password")) }
             return
@@ -45,7 +47,20 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun signInWithGoogle(activity: Activity) {
+    fun signInWithGoogle(activity: Activity?) {
+        if (_isLoading.value) return
+        if (!authRepository.isGoogleSignInConfigured()) {
+            viewModelScope.launch {
+                _effect.send(LoginUiEffect.ShowError("Google sign-in is not set up yet. Finish Firebase Google Auth setup first."))
+            }
+            return
+        }
+        if (activity == null) {
+            viewModelScope.launch {
+                _effect.send(LoginUiEffect.ShowError("Google sign-in is unavailable on this screen right now."))
+            }
+            return
+        }
         viewModelScope.launch {
             _isLoading.value = true
             authRepository.signInWithGoogle(activity).fold(

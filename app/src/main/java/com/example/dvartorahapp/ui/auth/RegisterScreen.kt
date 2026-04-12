@@ -61,6 +61,7 @@ fun RegisterScreen(
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalContext.current.findActivity()
+    val googleConfigured = viewModel.isGoogleSignInConfigured
 
     var displayName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -201,11 +202,20 @@ fun RegisterScreen(
                             }
 
                             androidx.compose.material3.OutlinedButton(
-                                onClick = { activity?.let(viewModel::signInWithGoogle) },
+                                onClick = { viewModel.signInWithGoogle(activity) },
                                 modifier = Modifier.fillMaxWidth().height(48.dp),
-                                shape = ButtonShape
+                                shape = ButtonShape,
+                                enabled = googleConfigured
                             ) {
                                 Text("Continue with Google", style = MaterialTheme.typography.labelLarge)
+                            }
+
+                            if (!googleConfigured) {
+                                Text(
+                                    text = "Google sign-in will work after Firebase Google Auth is configured.",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                         }
                     }

@@ -6,9 +6,14 @@ import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.NoCredentialException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.FirebaseNetworkException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -29,6 +34,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val credentialManager by lazy { CredentialManager.create(appContext) }
 
     override val currentUser: FirebaseUser? get() = auth.currentUser
+    override fun isGoogleSignInConfigured(): Boolean = appContext.getGoogleWebClientIdOrNull() != null
 
     override fun authStateFlow(): Flow<FirebaseUser?> = callbackFlow {
         val listener = FirebaseAuth.AuthStateListener { trySend(it.currentUser) }
@@ -70,7 +76,7 @@ class AuthRepositoryImpl @Inject constructor(
         val firebaseCredential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
         auth.signInWithCredential(firebaseCredential).await().user
             ?: error("Google sign-in did not return a Firebase user.")
-    }
+    }.mapFailure(::toUserFacingGoogleSignInError)
 
     override suspend fun register(email: String, password: String): Result<FirebaseUser> = runCatching {
         auth.createUserWithEmailAndPassword(email, password).await().user!!
@@ -88,10 +94,32 @@ class AuthRepositoryImpl @Inject constructor(
     }
 }
 
+private fun <T> Result<T>.mapFailure(transform: (Throwable) -> Throwable): Result<T> =
+    fold(
+        onSuccess = { Result.success(it) },
+        onFailure = { Result.failure(transform(it)) }
+    )
+
 private fun Context.getGoogleWebClientId(): String {
-    val resId = resources.getIdentifier("default_web_client_id", "string", packageName)
-    require(resId != 0) {
+    return getGoogleWebClientIdOrNull() ?: error(
         "Google sign-in is not fully configured. Add a Web OAuth client in Firebase and refresh google-services.json."
+    )
+}
+
+private fun Context.getGoogleWebClientIdOrNull(): String? {
+    val resId = resources.getIdentifier("default_web_client_id", "string", packageName)
+    return if (resId == 0) null else getString(resId)
+}
+
+private fun toUserFacingGoogleSignInError(error: Throwable): Throwable {
+    val message = when (error) {
+        is GetCredentialCancellationException -> "Google sign-in was cancelled."
+        is NoCredentialException -> "No Google account was selected on this device."
+        is FirebaseNetworkException -> "Could not connect. Check your internet connection."
+        is FirebaseAuthInvalidCredentialsException -> "Google sign-in could not be verified. Try again after updating Firebase configuration."
+        is GoogleIdTokenParsingException -> "Google sign-in response could not be read."
+        is GetCredentialException -> error.message ?: "Google sign-in is unavailable right now."
+        else -> error.message ?: "Could not sign in with Google"
     }
-    return getString(resId)
+    return IllegalStateException(message, error)
 }
