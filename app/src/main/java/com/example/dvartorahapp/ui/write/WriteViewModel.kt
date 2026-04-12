@@ -31,6 +31,7 @@ class WriteViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val editDvarId: String? = savedStateHandle["dvarId"]
+    val isEditing: Boolean = editDvarId != null
 
     var title by mutableStateOf("")
     var selectedOccasion by mutableStateOf<ParshaOccasion?>(null)
@@ -55,22 +56,24 @@ class WriteViewModel @Inject constructor(
             }
         } else {
             viewModelScope.launch {
-                selectedOccasion = currentParshaProvider.getCurrentParsha(schedulePreferenceStore.getMode())?.occasion
+                selectedOccasion = runCatching {
+                    currentParshaProvider.getCurrentParsha(schedulePreferenceStore.getMode())?.occasion
+                }.getOrNull()
             }
         }
     }
 
     fun submit(authorUid: String, authorName: String) {
         if (title.isBlank()) {
-            viewModelScope.launch { _effect.send(WriteUiEffect.ShowError("Please enter a title")) }
+            viewModelScope.launch { _effect.send(WriteUiEffect.ShowError("Enter a title")) }
             return
         }
         if (selectedOccasion == null) {
-            viewModelScope.launch { _effect.send(WriteUiEffect.ShowError("Please select a Parsha or occasion")) }
+            viewModelScope.launch { _effect.send(WriteUiEffect.ShowError("Select a parsha")) }
             return
         }
         if (body.isBlank()) {
-            viewModelScope.launch { _effect.send(WriteUiEffect.ShowError("Please write the body of your Dvar Torah")) }
+            viewModelScope.launch { _effect.send(WriteUiEffect.ShowError("Write your Dvar Torah")) }
             return
         }
 
@@ -102,7 +105,7 @@ class WriteViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = { _effect.send(WriteUiEffect.NavigateBack) },
-                onFailure = { _effect.send(WriteUiEffect.ShowError(it.message ?: "Failed to save")) }
+                onFailure = { _effect.send(WriteUiEffect.ShowError(it.message ?: "Could not save Dvar Torah")) }
             )
             _isLoading.value = false
         }

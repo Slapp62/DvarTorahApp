@@ -28,6 +28,13 @@ class CurrentParshaProvider @Inject constructor() {
     private var cachedParsha: CurrentParshaInfo? = null
 
     suspend fun getCurrentParsha(mode: ParshaScheduleMode = ParshaScheduleMode.DEVICE): CurrentParshaInfo? = withContext(Dispatchers.IO) {
+        getParshaForShabbatOffset(mode, 0)
+    }
+
+    suspend fun getParshaForShabbatOffset(
+        mode: ParshaScheduleMode = ParshaScheduleMode.DEVICE,
+        weekOffset: Int = 0
+    ): CurrentParshaInfo? = withContext(Dispatchers.IO) {
         val deviceTimeZone = TimeZone.getDefault()
         val isIsraelSchedule = when (mode) {
             ParshaScheduleMode.DEVICE -> useIsraelSchedule(deviceTimeZone, Locale.getDefault())
@@ -38,6 +45,9 @@ class CurrentParshaProvider @Inject constructor() {
             timeZone = deviceTimeZone
         }
         val shabbat = nextOrSameShabbat(deviceTimeZone)
+        if (weekOffset != 0) {
+            shabbat.add(Calendar.DAY_OF_MONTH, weekOffset * 7)
+        }
         val dateIso = isoDateFormat.format(shabbat.time)
         val cacheKey = "${deviceTimeZone.id}|$isIsraelSchedule|$dateIso"
 

@@ -1,5 +1,6 @@
 package com.example.dvartorahapp.ui.auth
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dvartorahapp.data.model.UserProfile
@@ -34,7 +35,7 @@ class RegisterViewModel @Inject constructor(
     fun register(displayName: String, email: String, password: String, confirmPassword: String) {
         when {
             displayName.isBlank() || email.isBlank() || password.isBlank() ->
-                viewModelScope.launch { _effect.send(RegisterUiEffect.ShowError("Please fill in all fields")) }
+                viewModelScope.launch { _effect.send(RegisterUiEffect.ShowError("Fill in all fields")) }
             password != confirmPassword ->
                 viewModelScope.launch { _effect.send(RegisterUiEffect.ShowError("Passwords do not match")) }
             password.length < 6 ->
@@ -51,13 +52,39 @@ class RegisterViewModel @Inject constructor(
                         )
                         userRepository.createUserProfile(profile).fold(
                             onSuccess = { _effect.send(RegisterUiEffect.NavigateToFeed) },
-                            onFailure = { _effect.send(RegisterUiEffect.ShowError("Account created but profile setup failed")) }
+                            onFailure = {
+                                authRepository.signOut()
+                                _effect.send(RegisterUiEffect.ShowError("Account created, but profile setup failed. Please try again."))
+                            }
                         )
                     },
-                    onFailure = { _effect.send(RegisterUiEffect.ShowError(it.message ?: "Registration failed")) }
+                    onFailure = { _effect.send(RegisterUiEffect.ShowError(it.message ?: "Could not create account")) }
                 )
                 _isLoading.value = false
             }
+        }
+    }
+
+    fun signInWithGoogle(activity: Activity) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            authRepository.signInWithGoogle(activity).fold(
+                onSuccess = { user ->
+                    userRepository.ensureUserProfile(
+                        uid = user.uid,
+                        displayName = user.displayName.orEmpty(),
+                        email = user.email.orEmpty()
+                    ).fold(
+                        onSuccess = { _effect.send(RegisterUiEffect.NavigateToFeed) },
+                        onFailure = {
+                            authRepository.signOut()
+                            _effect.send(RegisterUiEffect.ShowError("Google sign-in worked, but the profile could not be prepared."))
+                        }
+                    )
+                },
+                onFailure = { _effect.send(RegisterUiEffect.ShowError(it.message ?: "Could not sign in with Google")) }
+            )
+            _isLoading.value = false
         }
     }
 }

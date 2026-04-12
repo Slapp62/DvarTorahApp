@@ -17,8 +17,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
+sealed class FeedParshaFilter {
+    data object Current : FeedParshaFilter()
+    data object Previous : FeedParshaFilter()
+    data object Next : FeedParshaFilter()
+    data object All : FeedParshaFilter()
+    data class Specific(val occasion: ParshaOccasion) : FeedParshaFilter()
+}
+
 sealed class FeedUiState {
-    object Loading : FeedUiState()
+    data object Loading : FeedUiState()
     data class Success(val items: List<DvarTorah>, val activeFilter: ParshaOccasion?) : FeedUiState()
     data class Error(val message: String) : FeedUiState()
 }
@@ -30,47 +38,66 @@ class FeedViewModel @Inject constructor(
     private val schedulePreferenceStore: ParshaSchedulePreferenceStore
 ) : ViewModel() {
 
-    private val _activeFilter = MutableStateFlow<ParshaOccasion?>(null)
-    val activeFilter: StateFlow<ParshaOccasion?> = _activeFilter.asStateFlow()
+    private val _selectedFilter = MutableStateFlow<FeedParshaFilter>(FeedParshaFilter.Current)
+    val selectedFilter: StateFlow<FeedParshaFilter> = _selectedFilter.asStateFlow()
 
     private val _currentParsha = MutableStateFlow<CurrentParshaInfo?>(null)
     val currentParsha: StateFlow<CurrentParshaInfo?> = _currentParsha.asStateFlow()
 
-    private var defaultApplied = false
+    private val _previousParsha = MutableStateFlow<CurrentParshaInfo?>(null)
+    val previousParsha: StateFlow<CurrentParshaInfo?> = _previousParsha.asStateFlow()
+
+    private val _nextParsha = MutableStateFlow<CurrentParshaInfo?>(null)
+    val nextParsha: StateFlow<CurrentParshaInfo?> = _nextParsha.asStateFlow()
 
     init {
         viewModelScope.launch {
             schedulePreferenceStore.modeFlow().collect { mode ->
-                runCatching { currentParshaProvider.getCurrentParsha(mode) }
-                    .onSuccess { info ->
-                        _currentParsha.value = info
-                        if (info != null) {
-                            _activeFilter.value = info.occasion
-                            defaultApplied = true
-                        }
-                    }
+                runCatching {
+                    Triple(
+                        currentParshaProvider.getParshaForShabbatOffset(mode, -1),
+                        currentParshaProvider.getParshaForShabbatOffset(mode, 0),
+                        currentParshaProvider.getParshaForShabbatOffset(mode, 1)
+                    )
+                }.onSuccess { (previous, current, next) ->
+                    _previousParsha.value = previous
+                    _currentParsha.value = current
+                    _nextParsha.value = next
+                }
             }
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val uiState: StateFlow<FeedUiState> = _activeFilter
-        .flatMapLatest { filter ->
-            repository.getPublishedDvareiTorah(filter?.key)
+    val uiState: StateFlow<FeedUiState> = combine(
+        _selectedFilter,
+        _previousParsha,
+        _currentParsha
+        ,
+        _nextParsha
+    ) { filter, previous, current, next ->
+        when (filter) {
+            FeedParshaFilter.All -> null
+            FeedParshaFilter.Previous -> previous?.occasion
+            FeedParshaFilter.Current -> current?.occasion
+            FeedParshaFilter.Next -> next?.occasion
+            is FeedParshaFilter.Specific -> filter.occasion
+        }
+    }.flatMapLatest { occasion ->
+            repository.getPublishedDvareiTorah(occasion?.key)
                 .timeout(15.seconds)
-                .map<List<DvarTorah>, FeedUiState> { FeedUiState.Success(it, filter) }
+                .map<List<DvarTorah>, FeedUiState> { FeedUiState.Success(it, occasion) }
                 .catch { e ->
                     if (e is TimeoutCancellationException) {
-                        emit(FeedUiState.Error("Could not connect to server. Check your internet connection."))
+                        emit(FeedUiState.Error("Could not connect. Check your internet connection."))
                     } else {
-                        emit(FeedUiState.Error(e.message ?: "Failed to load"))
+                        emit(FeedUiState.Error(e.message ?: "Could not load Divrei Torah"))
                     }
                 }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FeedUiState.Loading)
 
-    fun setFilter(occasion: ParshaOccasion?) {
-        defaultApplied = true
-        _activeFilter.value = occasion
+    fun setFilter(filter: FeedParshaFilter) {
+        _selectedFilter.value = filter
     }
 }

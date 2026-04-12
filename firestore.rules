@@ -41,15 +41,19 @@ service cloud.firestore {
 
       allow create: if isSelf(uid)
         && request.resource.data.role == 'viewer'
-        && !('admin' in request.resource.data)
-        && !('writer' in request.resource.data);
+        && request.resource.data.admin == false
+        && request.resource.data.writer == false
+        && request.resource.data.viewer == false;
 
       allow update: if (
           isSelf(uid)
           && request.resource.data.role == resource.data.role
+          && request.resource.data.admin == resource.data.admin
+          && request.resource.data.writer == resource.data.writer
+          && request.resource.data.viewer == resource.data.viewer
         ) || isAdmin();
 
-      allow delete: if false;
+      allow delete: if isSelf(uid);
     }
 
     match /divrei_torah/{dvarId} {
@@ -69,7 +73,10 @@ service cloud.firestore {
           && request.resource.data.status == resource.data.status
         ) || isAdmin();
 
-      allow delete: if isAdmin();
+      allow delete: if (
+          isWriter()
+          && resource.data.authorUid == request.auth.uid
+        ) || isAdmin();
 
       match /likes/{uid} {
         allow read: if signedIn();
@@ -95,7 +102,9 @@ service cloud.firestore {
           && request.resource.data.status == 'pending'
         ) || isAdmin();
 
-      allow delete: if false;
+      allow delete: if isAdmin() || (
+          signedIn() && resource.data.applicantUid == request.auth.uid
+        );
     }
 
     match /reports/{reportId} {
@@ -106,7 +115,9 @@ service cloud.firestore {
         && request.resource.data.status == 'pending';
 
       allow update: if isAdmin();
-      allow delete: if false;
+      allow delete: if isAdmin()
+        || (signedIn() && resource.data.reporterUid == request.auth.uid)
+        || (signedIn() && resource.data.dvarAuthorUid == request.auth.uid);
     }
   }
 }

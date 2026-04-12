@@ -37,7 +37,9 @@ class WriterApplicationViewModel @Inject constructor(
     private var loadJob: Job? = null
 
     fun loadApplication(uid: String) {
-        if (loadJob?.isActive == true) return
+        if (loadJob?.isActive == true) {
+            loadJob?.cancel()
+        }
         loadJob = viewModelScope.launch {
             applicationRepository.getUserApplication(uid).collect { application ->
                 _currentApplication.value = application
@@ -47,16 +49,16 @@ class WriterApplicationViewModel @Inject constructor(
 
     fun submitApplication(user: UserProfile, motivation: String) {
         if (motivation.isBlank()) {
-            viewModelScope.launch { _effect.send(ApplyUiEffect.ShowError("Please tell us why you'd like to write")) }
+            viewModelScope.launch { _effect.send(ApplyUiEffect.ShowError("Please tell us why you want to write")) }
             return
         }
         val existingApplication = _currentApplication.value
         if (existingApplication?.status == FirestoreConstants.ApplicationStatus.PENDING) {
-            viewModelScope.launch { _effect.send(ApplyUiEffect.ShowError("Your application is already pending review")) }
+            viewModelScope.launch { _effect.send(ApplyUiEffect.ShowError("Your application is already under review")) }
             return
         }
         if (existingApplication?.status == FirestoreConstants.ApplicationStatus.APPROVED) {
-            viewModelScope.launch { _effect.send(ApplyUiEffect.ShowError("Your account has already been approved for writing")) }
+            viewModelScope.launch { _effect.send(ApplyUiEffect.ShowError("Your account already has writer access")) }
             return
         }
         viewModelScope.launch {
@@ -70,7 +72,7 @@ class WriterApplicationViewModel @Inject constructor(
             )
             applicationRepository.submitApplication(application).fold(
                 onSuccess = { _effect.send(ApplyUiEffect.Success) },
-                onFailure = { _effect.send(ApplyUiEffect.ShowError(it.message ?: "Failed to submit")) }
+                onFailure = { _effect.send(ApplyUiEffect.ShowError(it.message ?: "Could not submit application")) }
             )
             _isLoading.value = false
         }

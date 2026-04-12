@@ -7,6 +7,7 @@ import com.example.dvartorahapp.data.model.DvarTorah
 import com.example.dvartorahapp.data.repository.DvarTorahRepository
 import com.example.dvartorahapp.data.repository.ReportRepository
 import com.example.dvartorahapp.data.model.Report
+import com.example.dvartorahapp.data.model.UserProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -34,9 +35,9 @@ class DvarTorahDetailViewModel @Inject constructor(
 
     val uiState: StateFlow<DetailUiState> = dvarTorahRepository.getDvarTorahById(dvarId)
         .map<DvarTorah?, DetailUiState> { dvar ->
-            if (dvar != null) DetailUiState.Success(dvar) else DetailUiState.Error("Not found")
+            if (dvar != null) DetailUiState.Success(dvar) else DetailUiState.Error("Dvar Torah not found")
         }
-        .catch { emit(DetailUiState.Error(it.message ?: "Failed to load")) }
+        .catch { emit(DetailUiState.Error(it.message ?: "Could not load Dvar Torah")) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DetailUiState.Loading)
 
     private val _effect = Channel<DetailUiEffect>()
@@ -45,7 +46,7 @@ class DvarTorahDetailViewModel @Inject constructor(
     fun toggleLike(uid: String) {
         viewModelScope.launch {
             dvarTorahRepository.toggleLike(dvarId, uid).onFailure {
-                _effect.send(DetailUiEffect.ShowMessage("Failed to update like"))
+                _effect.send(DetailUiEffect.ShowMessage("Could not update like"))
             }
         }
     }
@@ -53,12 +54,30 @@ class DvarTorahDetailViewModel @Inject constructor(
     fun getUserLikedStatus(uid: String): Flow<Boolean> =
         dvarTorahRepository.getUserLikedStatus(dvarId, uid)
 
-    fun submitReport(reporterUid: String, reason: String) {
+    fun submitReport(reporter: UserProfile, reason: String) {
         viewModelScope.launch {
-            val report = Report(dvarId = dvarId, reporterUid = reporterUid, reason = reason)
+            val currentDvar = (uiState.value as? DetailUiState.Success)?.dvarTorah
+            val bodyPreview = currentDvar?.body
+                ?.replace("\\s+".toRegex(), " ")
+                ?.trim()
+                ?.take(220)
+                .orEmpty()
+            val report = Report(
+                dvarId = dvarId,
+                reporterUid = reporter.uid,
+                reporterName = reporter.displayName,
+                reporterEmail = reporter.email,
+                reason = reason,
+                dvarTitle = currentDvar?.title.orEmpty(),
+                dvarAuthorUid = currentDvar?.authorUid.orEmpty(),
+                dvarAuthorName = currentDvar?.authorName.orEmpty(),
+                dvarOccasion = currentDvar?.occasion.orEmpty(),
+                dvarBodyPreview = bodyPreview,
+                dvarStatus = currentDvar?.status ?: "published"
+            )
             reportRepository.submitReport(report).fold(
-                onSuccess = { _effect.send(DetailUiEffect.ShowMessage("Report submitted. Thank you.")) },
-                onFailure = { _effect.send(DetailUiEffect.ShowMessage("Failed to submit report")) }
+                onSuccess = { _effect.send(DetailUiEffect.ShowMessage("Report submitted")) },
+                onFailure = { _effect.send(DetailUiEffect.ShowMessage("Could not submit report")) }
             )
         }
     }

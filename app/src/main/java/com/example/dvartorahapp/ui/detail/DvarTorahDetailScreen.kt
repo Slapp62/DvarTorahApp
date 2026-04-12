@@ -1,28 +1,58 @@
 package com.example.dvartorahapp.ui.detail
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Flag
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dvartorahapp.data.model.UserProfile
+import com.example.dvartorahapp.ui.components.EditorialPanel
 import com.example.dvartorahapp.ui.components.ErrorMessage
 import com.example.dvartorahapp.ui.components.LoadingOverlay
 import com.example.dvartorahapp.ui.components.RtlAwareText
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun DvarTorahDetailScreen(
     onNavigateBack: () -> Unit,
@@ -30,15 +60,15 @@ fun DvarTorahDetailScreen(
     onRequireAuth: () -> Unit,
     viewModel: DvarTorahDetailViewModel = hiltViewModel()
 ) {
-    val uiState           by viewModel.uiState.collectAsState()
-    val snackbarHostState  = remember { SnackbarHostState() }
-    var showReportSheet   by remember { mutableStateOf(false) }
-    var selectedReason    by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    var showReportSheet by remember { mutableStateOf(false) }
+    var selectedReason by remember { mutableStateOf("") }
 
     val isLiked by remember(currentUser?.uid) {
         if (currentUser != null) viewModel.getUserLikedStatus(currentUser.uid)
         else kotlinx.coroutines.flow.flowOf(false)
-    }.collectAsState(initial = false)
+    }.collectAsStateWithLifecycle(initialValue = false)
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -50,6 +80,7 @@ fun DvarTorahDetailScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = {},
@@ -61,11 +92,7 @@ fun DvarTorahDetailScreen(
                 actions = {
                     if (currentUser != null) {
                         IconButton(onClick = { showReportSheet = true }) {
-                            Icon(
-                                Icons.Outlined.Flag,
-                                contentDescription = "Report",
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                            Icon(Icons.Outlined.Flag, contentDescription = "Report")
                         }
                     }
                 },
@@ -76,8 +103,11 @@ fun DvarTorahDetailScreen(
         }
     ) { padding ->
         when (val state = uiState) {
-            is DetailUiState.Loading -> LoadingOverlay(modifier = Modifier.padding(padding))
-            is DetailUiState.Error   -> ErrorMessage(state.message, modifier = Modifier.padding(padding))
+            is DetailUiState.Loading -> LoadingOverlay(
+                modifier = Modifier.padding(padding),
+                label = "Loading Dvar Torah"
+            )
+            is DetailUiState.Error -> ErrorMessage(state.message, modifier = Modifier.padding(padding))
             is DetailUiState.Success -> {
                 val dvar = state.dvarTorah
                 Column(
@@ -85,106 +115,134 @@ fun DvarTorahDetailScreen(
                         .fillMaxSize()
                         .padding(padding)
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 24.dp, vertical = 20.dp)
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Occasion badge
-                    dvar.parshaOccasion?.let { occasion ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(MaterialTheme.colorScheme.primaryContainer)
-                                    .padding(horizontal = 8.dp, vertical = 3.dp)
-                            ) {
-                                Text(
-                                    text = occasion.displayNameEn.uppercase(),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    EditorialPanel {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize()
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(
+                                            MaterialTheme.colorScheme.surface,
+                                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.32f)
+                                        )
+                                    )
                                 )
-                            }
-                            Text(
-                                text = occasion.displayNameHe,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(14.dp))
-                    }
-
-                    // Title
-                    Text(
-                        text = dvar.title,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    Text(
-                        text = "By ${dvar.authorName}",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    // Body
-                    RtlAwareText(
-                        text  = dvar.body,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-
-                    // Sources
-                    if (dvar.sources.isNotBlank()) {
-                        Spacer(modifier = Modifier.height(28.dp))
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Sources",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = dvar.sources,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(28.dp))
-
-                    // Like row
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        IconButton(
-                            onClick = {
-                                if (currentUser != null) viewModel.toggleLike(currentUser.uid)
-                                else onRequireAuth()
-                            },
-                            modifier = Modifier.size(36.dp)
+                                .padding(22.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Icon(
-                                imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                                contentDescription = null,
-                                tint = if (isLiked) MaterialTheme.colorScheme.secondary
-                                       else MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                        if (dvar.likeCount > 0) {
+                            dvar.parshaOccasion?.let { occasion ->
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(999.dp))
+                                        .background(MaterialTheme.colorScheme.primaryContainer)
+                                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                                ) {
+                                    Text(
+                                        text = "${occasion.displayNameEn} • ${occasion.displayNameHe}",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
+                            }
+
                             Text(
-                                text = "${dvar.likeCount}",
-                                style = MaterialTheme.typography.labelMedium,
+                                text = dvar.title,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Text(
+                                text = "by ${dvar.authorName}",
+                                style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.BookmarkBorder,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Text(
+                                    text = "Dvar Torah",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+
+                    EditorialPanel {
+                        Column(
+                            modifier = Modifier
+                                .animateContentSize()
+                                .padding(horizontal = 20.dp, vertical = 22.dp),
+                            verticalArrangement = Arrangement.spacedBy(18.dp)
+                        ) {
+                            RtlAwareText(
+                                text = dvar.body,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+
+                            if (dvar.sources.isNotBlank()) {
+                                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Text(
+                                        text = "Sources",
+                                        style = MaterialTheme.typography.titleSmall,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = dvar.sources,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    EditorialPanel {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        if (currentUser != null) viewModel.toggleLike(currentUser.uid)
+                                        else onRequireAuth()
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                        contentDescription = null,
+                                        tint = if (isLiked) MaterialTheme.colorScheme.secondary
+                                        else MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                Text(
+                                    text = if (dvar.likeCount > 0) "${dvar.likeCount} likes" else "Be the first to like this Dvar Torah",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            if (currentUser != null) {
+                                TextButton(onClick = { showReportSheet = true }) {
+                                    Text("Report")
+                                }
+                            }
                         }
                     }
                 }
@@ -192,57 +250,54 @@ fun DvarTorahDetailScreen(
         }
     }
 
-    // Report bottom sheet
     if (showReportSheet) {
-        val reasons = listOf("Inappropriate content", "Spam", "Factual error", "Other")
+        val reasons = listOf("Inappropriate content", "Spam", "Incorrect information", "Other")
         ModalBottomSheet(
-            onDismissRequest = { showReportSheet = false },
-            shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
+            onDismissRequest = {
+                showReportSheet = false
+                selectedReason = ""
+            },
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
         ) {
             Column(
-                modifier = Modifier
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 32.dp)
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("Report", style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.height(4.dp))
+                Text("Report this Dvar Torah", style = MaterialTheme.typography.titleMedium)
                 Text(
-                    "Select a reason for reporting this Dvar Torah",
+                    "Choose a reason for this report.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = Modifier.height(16.dp))
                 reasons.forEach { reason ->
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 2.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = selectedReason == reason,
-                            onClick  = { selectedReason = reason }
+                            onClick = { selectedReason = reason }
                         )
                         Text(
-                            text  = reason,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(start = 8.dp)
+                            text = reason,
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = {
                         if (selectedReason.isNotBlank() && currentUser != null) {
-                            viewModel.submitReport(currentUser.uid, selectedReason)
+                            viewModel.submitReport(currentUser, selectedReason)
                             showReportSheet = false
+                            selectedReason = ""
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(44.dp),
-                    shape    = RoundedCornerShape(6.dp),
-                    enabled  = selectedReason.isNotBlank()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp),
+                    enabled = selectedReason.isNotBlank()
                 ) {
-                    Text("Submit report", style = MaterialTheme.typography.labelLarge)
+                    Text("Submit report")
                 }
             }
         }

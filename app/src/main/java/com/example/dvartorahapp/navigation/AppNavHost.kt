@@ -1,5 +1,8 @@
 package com.example.dvartorahapp.navigation
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -8,6 +11,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -17,7 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.dvartorahapp.data.remote.FirestoreConstants
+import com.example.dvartorahapp.ads.AdsViewModel
 import com.example.dvartorahapp.ui.admin.AdminPanelScreen
 import com.example.dvartorahapp.ui.apply.WriterApplicationScreen
 import com.example.dvartorahapp.ui.auth.AuthState
@@ -26,6 +30,7 @@ import com.example.dvartorahapp.ui.auth.LoginScreen
 import com.example.dvartorahapp.ui.auth.RegisterScreen
 import com.example.dvartorahapp.ui.detail.DvarTorahDetailScreen
 import com.example.dvartorahapp.ui.feed.FeedScreen
+import com.example.dvartorahapp.ui.components.BannerAdBar
 import com.example.dvartorahapp.ui.profile.ProfileScreen
 import com.example.dvartorahapp.ui.profile.ProfileViewModel
 import com.example.dvartorahapp.ui.write.WriteScreen
@@ -33,8 +38,16 @@ import com.example.dvartorahapp.ui.write.WriteScreen
 @Composable
 fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
     val navController = rememberNavController()
+    val profileViewModel: ProfileViewModel = hiltViewModel()
+    val adsViewModel: AdsViewModel = hiltViewModel()
     val authState by authViewModel.authState.collectAsStateWithLifecycle()
-    val userProfile by authViewModel.userProfile.collectAsStateWithLifecycle()
+    val adsUiState by adsViewModel.uiState.collectAsStateWithLifecycle()
+    val userDvareiTorah by profileViewModel.userDvareiTorah.collectAsStateWithLifecycle()
+    val userApplication by profileViewModel.userApplication.collectAsStateWithLifecycle()
+    val parshaScheduleMode by profileViewModel.parshaScheduleMode.collectAsStateWithLifecycle()
+    val isDeletingAccount by profileViewModel.isDeletingAccount.collectAsStateWithLifecycle()
+    val appSnackbarHostState = remember { SnackbarHostState() }
+    val activity = LocalContext.current.findActivity()
 
     val currentUser = (authState as? AuthState.Authenticated)?.profile
 
@@ -47,25 +60,57 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
         add(NavItem("Profile", Icons.Filled.Person, Screen.Profile.route))
     }
 
+    LaunchedEffect(activity) {
+        activity?.let(adsViewModel::refreshConsent)
+    }
+
+    LaunchedEffect(profileViewModel) {
+        profileViewModel.effect.collect { effect ->
+            when (effect) {
+                is com.example.dvartorahapp.ui.profile.ProfileUiEffect.AccountDeleted -> {
+                    appSnackbarHostState.showSnackbar("Your account was deleted.")
+                    navController.navigate(Screen.Feed.route) {
+                        popUpTo(navController.graph.findStartDestination().id) { saveState = false }
+                        launchSingleTop = true
+                    }
+                }
+
+                is com.example.dvartorahapp.ui.profile.ProfileUiEffect.ShowMessage -> {
+                    appSnackbarHostState.showSnackbar(effect.message)
+                }
+            }
+        }
+    }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(appSnackbarHostState) },
         bottomBar = {
-            if (navItems.size > 1) {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-                NavigationBar {
-                    navItems.forEach { item ->
-                        NavigationBarItem(
-                            icon = { Icon(item.icon, contentDescription = item.label) },
-                            label = { Text(item.label) },
-                            selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
-                            onClick = {
-                                navController.navigate(item.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                                    launchSingleTop = true
-                                    restoreState = true
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            val showBottomBar = currentDestination?.hierarchy?.any { destination ->
+                navItems.any { it.route == destination.route }
+            } == true
+
+            if (navItems.size > 1 && showBottomBar) {
+                androidx.compose.foundation.layout.Column {
+                    if (adsUiState.canRequestAds) {
+                        BannerAdBar()
+                    }
+                    NavigationBar {
+                        navItems.forEach { item ->
+                            NavigationBarItem(
+                                icon = { Icon(item.icon, contentDescription = item.label) },
+                                label = { Text(item.label) },
+                                selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
+                                onClick = {
+                                    navController.navigate(item.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
@@ -149,20 +194,28 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
             }
 
             composable(Screen.Profile.route) {
-                val profileViewModel: ProfileViewModel = hiltViewModel()
-                val userDvareiTorah by profileViewModel.userDvareiTorah.collectAsStateWithLifecycle()
-                val userApplication by profileViewModel.userApplication.collectAsStateWithLifecycle()
-                val parshaScheduleMode by profileViewModel.parshaScheduleMode.collectAsStateWithLifecycle()
                 ProfileScreen(
                     currentUser = currentUser,
                     userDvareiTorah = userDvareiTorah,
                     userApplication = userApplication,
                     parshaScheduleMode = parshaScheduleMode,
+                    showManageAdPrivacy = adsUiState.privacyOptionsRequired,
+                    isDeletingAccount = isDeletingAccount,
                     onNavigateToLogin = { navController.navigate(Screen.Login.route) },
                     onNavigateToApply = { navController.navigate(Screen.WriterApply.route) },
                     onNavigateToDvar = { navController.navigate(Screen.DvarDetail.createRoute(it)) },
                     onSignOut = { authViewModel.signOut() },
-                    onParshaScheduleModeChange = profileViewModel::setParshaScheduleMode
+                    onParshaScheduleModeChange = profileViewModel::setParshaScheduleMode,
+                    onManageAdPrivacy = {
+                        activity?.let {
+                            adsViewModel.showPrivacyOptions(it) { errorMessage ->
+                                if (!errorMessage.isNullOrBlank()) {
+                                    profileViewModel.showMessage(errorMessage)
+                                }
+                            }
+                        }
+                    },
+                    onDeleteAccount = profileViewModel::deleteAccount
                 )
             }
 
@@ -173,10 +226,17 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
                 } else {
                     AdminPanelScreen(
                         onNavigateBack = { navController.popBackStack() },
+                        onOpenDvar = { navController.navigate(Screen.DvarDetail.createRoute(it)) },
                         currentUser = user
                     )
                 }
             }
         }
     }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }
