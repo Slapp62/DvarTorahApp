@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Browse - Quick Dvar Torah</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#1b1c1a",
+                    "error-container": "#ffdad6",
+                    "secondary": "#5e5e5e",
+                    "surface-container": "#efeeea",
+                    "tertiary-fixed": "#ffdea5",
+                    "primary-fixed": "#d7e2ff",
+                    "surface": "#fbf9f5",
+                    "background": "#fbf9f5",
+                    "surface-container-low": "#f5f3ef",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#201500",
+                    "inverse-surface": "#30312e",
+                    "inverse-on-surface": "#f2f0ed",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#e4e2de",
+                    "surface-bright": "#fbf9f5",
+                    "on-primary-fixed-variant": "#374765",
+                    "on-surface-variant": "#44474d",
+                    "secondary-fixed": "#e4e2e2",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#1b1c1c",
+                    "inverse-primary": "#b6c7eb",
+                    "outline": "#75777e",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e4e2de",
+                    "primary-fixed-dim": "#b6c7eb",
+                    "outline-variant": "#c5c6ce",
+                    "surface-container-high": "#eae8e4",
+                    "surface-tint": "#4e5f7e",
+                    "primary": "#031632",
+                    "secondary-container": "#e1dfdf",
+                    "on-tertiary-fixed-variant": "#5d4201",
+                    "on-primary-fixed": "#081b38",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#1a2b48",
+                    "on-surface": "#1b1c1a",
+                    "on-tertiary-container": "#b08d48",
+                    "surface-dim": "#dbdad6",
+                    "on-secondary-fixed-variant": "#464747",
+                    "secondary-fixed-dim": "#c7c6c6",
+                    "on-primary-container": "#8293b5",
+                    "on-tertiary-fixed": "#261900",
+                    "tertiary-fixed-dim": "#e9c176",
+                    "tertiary-container": "#3a2800",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#626263"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Noto Serif"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-tertiary-fixed selection:text-on-tertiary-fixed">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fbf9f5]/80 backdrop-blur-md flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#031632] hover:opacity-80 transition-opacity cursor-pointer">search</span>
+</div>
+<h1 class="font-serif text-2xl font-bold text-[#031632] tracking-tight">Dvar Torah</h1>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a scholarly man with glasses in a warm, sunlit library setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyPi4o0EqFKV-7ZxlTiniRcZSMtgeP7ip5rCKhWA8b4JTu6DdYpExlK8L_hpYRqmRNjHMa9y6P1ExHhp0pfe3C4oSrvdpFxhnbRVKwp3BBaakf70F92XZUdZi-7JUv9bWoxSz3h90YTHLw6TVBlrzQOE2uWi6y-8L-mt9vfZB-Tye8T5k72A_sQYd3V12ac-7vVvQSvQVrJpOl210QsdF1XFSmJ6MWRMGOGGpV0O5uEv5BF8Df6EAnQ_IXcpM2Jdnn2tWlMBK7z6iL"/>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-5xl mx-auto">
+<!-- Search Area -->
+<section class="mb-10">
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-4 pl-12 pr-4 focus:ring-1 focus:ring-primary text-on-surface placeholder:text-on-surface-variant/50 font-label" placeholder="Search insights, parsha, or holiday..." type="text"/>
+</div>
+</section>
+<!-- Featured / Editorial Section -->
+<section class="mb-12">
+<h2 class="font-label text-[10px] uppercase tracking-widest font-semibold text-tertiary-fixed-dim mb-4">Weekly Spotlight</h2>
+<div class="relative rounded-xl overflow-hidden aspect-[16/9] md:aspect-[21/9] bg-primary-container group cursor-pointer shadow-lg">
+<img alt="Featured Torah Scroll" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" data-alt="Atmospheric shot of an ancient parchment scroll with elegant calligraphy under soft candle lighting in a dark room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApI2tXWspEXhVDMDot6wbWDuZAOZg3pQ4SNZv4VvAq_KsfFBANDaA40OzFPTAFCx7_U493YfSgVkG_DDGVHeEzdBSEOV0Ja8kQnaX_5gLltRN6ylWR1oO5SAmaDHSR8sBz8bFfwTmTQ1Ilmt6LazGg6yeNh072cTRqaZP-SHScbQGpYsJPEQ-ly_XT-dVHnIkneCNF6DRuCcRLxGqdxmbHrBQ8fupew64-UGiqd4kVV6iMR50CwQIJzY5L767J9NAZar49aPn1suh4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<span class="font-label text-[10px] uppercase tracking-[0.2em] font-bold text-tertiary-fixed-dim bg-primary/40 backdrop-blur-md px-3 py-1 rounded-full mb-3 inline-block">Current Parsha</span>
+<h3 class="font-headline text-4xl font-bold text-white mb-2 leading-tight">Vayeishev: The Power of Dreams</h3>
+<p class="text-white/80 font-serif max-w-lg">Exploring the tension between destiny and choice in the life of Yosef Hatzadik.</p>
+</div>
+</div>
+</section>
+<!-- Category Grid -->
+<section class="mb-12">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline text-3xl font-bold text-primary">Browse Library</h2>
+<p class="text-on-surface-variant font-serif">Explore wisdom across generations</p>
+</div>
+</div>
+<!-- Bento Grid Categories -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- Parsha -->
+<div class="bg-surface-container-high p-6 rounded-xl flex flex-col justify-between aspect-square group hover:bg-primary transition-colors duration-300">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl group-hover:text-white transition-colors">menu_book</span>
+<div>
+<h4 class="font-headline text-xl font-bold group-hover:text-white transition-colors">Parsha</h4>
+<p class="font-label text-xs text-on-surface-variant group-hover:text-white/70 transition-colors uppercase tracking-wider">The Weekly Portion</p>
+</div>
+</div>
+<!-- Holiday -->
+<div class="bg-surface-container-high p-6 rounded-xl flex flex-col justify-between aspect-square group hover:bg-primary transition-colors duration-300">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl group-hover:text-white transition-colors">celebration</span>
+<div>
+<h4 class="font-headline text-xl font-bold group-hover:text-white transition-colors">Holiday</h4>
+<p class="font-label text-xs text-on-surface-variant group-hover:text-white/70 transition-colors uppercase tracking-wider">Moadim &amp; Festivals</p>
+</div>
+</div>
+<!-- Topic -->
+<div class="bg-surface-container-high p-6 rounded-xl flex flex-col justify-between aspect-square group hover:bg-primary transition-colors duration-300">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl group-hover:text-white transition-colors">psychology</span>
+<div>
+<h4 class="font-headline text-xl font-bold group-hover:text-white transition-colors">Topic</h4>
+<p class="font-label text-xs text-on-surface-variant group-hover:text-white/70 transition-colors uppercase tracking-wider">Ethics &amp; Faith</p>
+</div>
+</div>
+<!-- Occasion -->
+<div class="bg-surface-container-high p-6 rounded-xl flex flex-col justify-between aspect-square group hover:bg-primary transition-colors duration-300">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl group-hover:text-white transition-colors">stadium</span>
+<div>
+<h4 class="font-headline text-xl font-bold group-hover:text-white transition-colors">Occasion</h4>
+<p class="font-label text-xs text-on-surface-variant group-hover:text-white/70 transition-colors uppercase tracking-wider">Simchas &amp; Events</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Topic Chips -->
+<section class="mb-12">
+<h3 class="font-label text-sm font-semibold uppercase tracking-widest text-primary mb-6">Popular Tags</h3>
+<div class="flex flex-wrap gap-3">
+<span class="px-5 py-2 rounded-full bg-surface-container-lowest text-primary font-label text-sm border border-outline-variant/20 hover:bg-tertiary-fixed-dim/20 transition-colors cursor-pointer">Chessed</span>
+<span class="px-5 py-2 rounded-full bg-surface-container-lowest text-primary font-label text-sm border border-outline-variant/20 hover:bg-tertiary-fixed-dim/20 transition-colors cursor-pointer">Tefillah</span>
+<span class="px-5 py-2 rounded-full bg-surface-container-lowest text-primary font-label text-sm border border-outline-variant/20 hover:bg-tertiary-fixed-dim/20 transition-colors cursor-pointer">Emunah</span>
+<span class="px-5 py-2 rounded-full bg-surface-container-lowest text-primary font-label text-sm border border-outline-variant/20 hover:bg-tertiary-fixed-dim/20 transition-colors cursor-pointer">Wedding</span>
+<span class="px-5 py-2 rounded-full bg-surface-container-lowest text-primary font-label text-sm border border-outline-variant/20 hover:bg-tertiary-fixed-dim/20 transition-colors cursor-pointer">Bar Mitzvah</span>
+<span class="px-5 py-2 rounded-full bg-surface-container-lowest text-primary font-label text-sm border border-outline-variant/20 hover:bg-tertiary-fixed-dim/20 transition-colors cursor-pointer">Shabbos</span>
+<span class="px-5 py-2 rounded-full bg-surface-container-lowest text-primary font-label text-sm border border-outline-variant/20 hover:bg-tertiary-fixed-dim/20 transition-colors cursor-pointer">Tzedakah</span>
+<span class="px-5 py-2 rounded-full bg-surface-container-lowest text-primary font-label text-sm border border-outline-variant/20 hover:bg-tertiary-fixed-dim/20 transition-colors cursor-pointer">Education</span>
+</div>
+</section>
+<!-- Recent Insights List -->
+<section class="mb-12">
+<h3 class="font-headline text-2xl font-bold text-primary mb-6">Recently Published</h3>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="bg-surface-container-low p-5 rounded-xl flex items-center gap-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="w-16 h-16 rounded-lg bg-surface-container-highest flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">auto_stories</span>
+</div>
+<div class="flex-grow">
+<p class="font-label text-[10px] uppercase tracking-widest text-tertiary-fixed-dim mb-1">Topic: Chessed</p>
+<h4 class="font-headline text-lg font-bold text-primary">The Silent Impact of Kind Words</h4>
+<p class="text-on-surface-variant text-sm font-serif line-clamp-1">Reflections on how speech builds worlds and defines our relationships...</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-low p-5 rounded-xl flex items-center gap-6 group cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="w-16 h-16 rounded-lg bg-surface-container-highest flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">history_edu</span>
+</div>
+<div class="flex-grow">
+<p class="font-label text-[10px] uppercase tracking-widest text-tertiary-fixed-dim mb-1">Occasion: Bar Mitzvah</p>
+<h4 class="font-headline text-lg font-bold text-primary">Taking the Reins of Responsibility</h4>
+<p class="text-on-surface-variant text-sm font-serif line-clamp-1">A guide for the young man entering the community of mitzvos...</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center pt-3 pb-6 px-4 bg-[#fbf9f5]/90 backdrop-blur-xl z-50 rounded-t-3xl shadow-[0_-4px_24px_rgba(27,28,26,0.04)]">
+<div class="flex flex-col items-center justify-center text-[#1b1c1a]/40 hover:text-[#031632] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined transition-transform duration-150 group-active:scale-90">home</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-semibold mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#031632] scale-110 transition-all cursor-pointer group">
+<span class="material-symbols-outlined transition-transform duration-150 group-active:scale-90" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-semibold mt-1">Browse</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#1b1c1a]/40 hover:text-[#031632] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined transition-transform duration-150 group-active:scale-90">bookmark</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-semibold mt-1">Saved</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#1b1c1a]/40 hover:text-[#031632] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined transition-transform duration-150 group-active:scale-90">person</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-semibold mt-1">Profile</span>
+</div>
+</nav>
+</body></html>

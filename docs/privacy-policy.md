@@ -1,6 +1,6 @@
-# ShabbosVorts Privacy Policy
+# Quick Dvar Torah Privacy Policy
 
-Replace this draft with your final hosted privacy policy before submission.
+Draft public privacy policy content for the current MVP launch state.
 
 Suggested sections:
 
@@ -9,20 +9,19 @@ Suggested sections:
   - display name
   - Divrei Torah content
   - reports, likes, and writer applications
-  - ad/consent related data handled by Google SDKs when ads are enabled
 - Why the data is used
   - authentication
   - syncing user content
   - moderation and abuse handling
-  - ad serving and consent management
+  - app reliability and safety
 - Who processes the data
   - Firebase Authentication
   - Cloud Firestore
   - Firebase Storage
-  - Google AdMob / UMP
+  - Brevo for writer approval emails
 - How users can request deletion
   - in-app deletion from Profile
   - external deletion/contact URL
 - Contact information: simchalapp@gmail.com
 
-Do not submit to Play with this draft as-is.
+Ads are disabled for the MVP launch.

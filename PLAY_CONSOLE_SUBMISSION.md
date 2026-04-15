@@ -14,7 +14,7 @@ This file is a practical checklist and draft copy for the Play Console.
 ## App Basics
 
 - App name:
-  - `ShabbosVorts`
+  - `Quick Dvar Torah`
 - Category:
   - `Books & Reference`
 - Contact email:
@@ -26,7 +26,7 @@ This file is a practical checklist and draft copy for the Play Console.
   - `Browse and write Divrei Torah for parsha and yom tov.`
 
 - Full description:
-  - `ShabbosVorts is a simple place to browse, write, and share Divrei Torah for Shabbos and yom tov.
+  - `Quick Dvar Torah is a simple place to browse, write, and share Divrei Torah for Shabbos, yom tov, and special occasions.
 
   Read thoughtful Torah insights by parsha, search for the week’s reading, and save your place in a calm reading experience.
 
@@ -40,7 +40,7 @@ This file is a practical checklist and draft copy for the Play Console.
   - Report inappropriate content
   - In-app privacy, content, and account deletion policies
 
-  ShabbosVorts is designed to support meaningful Torah learning, not spam, agitation, or propaganda.`
+  Quick Dvar Torah is designed to support meaningful Torah learning, not spam, agitation, or propaganda.`
 
 ## Screenshot Checklist
 
@@ -56,7 +56,7 @@ Prepare at least these phone screenshots:
 
 ### Ads
 
-- Answer: `Yes`
+- Answer: `No`
 
 ### Account deletion
 
@@ -89,23 +89,18 @@ Likely collected data:
 - App activity / interactions
   - Likes
   - In-app moderation/report interactions
-- Device or identifiers through ads / consent SDKs
-
 Likely purposes:
 
 - App functionality
 - Account management
 - Moderation / abuse prevention
 - Analytics or diagnostics if enabled
-- Advertising or marketing through AdMob
-
 Before submitting the Data Safety form, review the latest Google guidance and confirm against the exact SDK behavior you are using.
 
 ## Release Checklist
 
 1. Confirm Google sign-in works on a real device.
-2. Confirm banner ads load with your live AdMob IDs.
-3. Confirm policy URLs load publicly in a browser.
-4. Confirm account deletion works end-to-end.
-5. Upload an `.aab` release build, not only a debug APK.
-6. Keep `versionCode` increasing with every release.
+2. Confirm policy URLs load publicly in a browser.
+3. Confirm account deletion works end-to-end.
+4. Upload an `.aab` release build, not only a debug APK.
+5. Keep `versionCode` increasing with every release.

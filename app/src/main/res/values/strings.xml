@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">ShabbosVorts</string>
-    <string name="admob_app_id">ca-app-pub-4037651820590222~5023331819</string>
-    <string name="admob_banner_ad_unit_id">ca-app-pub-4037651820590222/4250749151</string>
+    <string name="app_name">Quick Dvar Torah</string>
     <string name="privacy_policy_url">https://slapp62.github.io/DvarTorahApp/privacy-policy.html</string>
     <string name="account_deletion_url">https://slapp62.github.io/DvarTorahApp/account-deletion.html</string>
 </resources>

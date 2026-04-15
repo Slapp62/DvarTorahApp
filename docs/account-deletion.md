@@ -1,4 +1,4 @@
-# ShabbosVorts Account Deletion
+# Quick Dvar Torah Account Deletion
 
 Replace this draft with a public web page before Play Store submission.
 

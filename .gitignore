@@ -8,10 +8,13 @@
 .kotlin/
 **/build/
 functions/node_modules/
+functions/.env*
 
 # Local machine-specific configuration
 local.properties
 app/google-services.json
+keystore.properties
+app/upload-keystore.jks
 
 # Android Studio / IntelliJ
 .idea/caches/

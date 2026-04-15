@@ -1,0 +1,29 @@
+package com.quickdvartorah.app.data.model
+
+import com.quickdvartorah.app.data.remote.FirestoreConstants
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class UserProfileTest {
+    @Test
+    fun `admin flag elevates effective role to admin`() {
+        val profile = UserProfile(role = FirestoreConstants.Roles.VIEWER, admin = true)
+
+        assertEquals(FirestoreConstants.Roles.ADMIN, profile.effectiveRole)
+        assertTrue(profile.hasAdminAccess)
+        assertTrue(profile.hasWriterAccess)
+        assertFalse(profile.isViewerOnly)
+    }
+
+    @Test
+    fun `writer role grants writer access without admin access`() {
+        val profile = UserProfile(role = FirestoreConstants.Roles.WRITER)
+
+        assertEquals(FirestoreConstants.Roles.WRITER, profile.effectiveRole)
+        assertTrue(profile.hasWriterAccess)
+        assertFalse(profile.hasAdminAccess)
+        assertFalse(profile.isViewerOnly)
+    }
+}

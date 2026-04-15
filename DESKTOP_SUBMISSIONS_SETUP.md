@@ -18,10 +18,10 @@ Create these fields in Google Forms:
 1. `Name`
 2. `Email`
 3. `Title`
-4. `Parsha key`
+4. `Parsha`
 5. `Body`
 6. `Sources`
-7. `Google Docs link`
+7. `Google Docs Link`
 8. `I agree to the content policy`
 
 Use the parsha key values already used in the app, for example:
@@ -72,16 +72,15 @@ Use a trusted server path. This repo now includes:
 ## What still needs to be done
 
 1. Run `npm install` inside `functions/`.
-2. Set `DESKTOP_SUBMISSION_SECRET` for the function.
-   Example:
-   `firebase functions:secrets:set DESKTOP_SUBMISSION_SECRET`
+2. Create `functions/.env.dvartorahapp` with:
+   `DESKTOP_SUBMISSION_SECRET=your-shared-secret`
 3. Deploy the function.
    Example:
-   `firebase deploy --only functions`
+   `firebase deploy --only functions --project dvartorahapp`
 4. Create the Google Form with the listed field names.
 5. Paste `google_apps_script/submit_to_shabbosvorts.gs` into Apps Script.
-6. Add an installable `onFormSubmit` trigger.
-7. Make sure the form response value for `I agree to the content policy` is a clear affirmative choice such as `Yes`.
-8. Fill in:
-   - `YOUR_FUNCTION_URL_HERE`
-   - `YOUR_SHARED_SECRET_HERE`
+6. In Apps Script, set Script Properties:
+   - `SHABBOSVORTS_FUNCTION_URL=https://submitdesktopdvar-4ntfttmd6q-uc.a.run.app`
+   - `SHABBOSVORTS_SHARED_SECRET=<your shared secret>`
+7. Add an installable `onFormSubmit` trigger.
+8. Make sure the form response value for `I agree to the content policy` is a clear affirmative choice such as `Yes`.

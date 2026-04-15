@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-background": "#1b1c1a",
+            "error-container": "#ffdad6",
+            "secondary": "#5e5e5e",
+            "surface-container": "#efeeea",
+            "tertiary-fixed": "#ffdea5",
+            "primary-fixed": "#d7e2ff",
+            "surface": "#fbf9f5",
+            "background": "#fbf9f5",
+            "surface-container-low": "#f5f3ef",
+            "on-tertiary": "#ffffff",
+            "on-secondary": "#ffffff",
+            "tertiary": "#201500",
+            "inverse-surface": "#30312e",
+            "inverse-on-surface": "#f2f0ed",
+            "on-primary": "#ffffff",
+            "surface-variant": "#e4e2de",
+            "surface-bright": "#fbf9f5",
+            "on-primary-fixed-variant": "#374765",
+            "on-surface-variant": "#44474d",
+            "secondary-fixed": "#e4e2e2",
+            "on-error": "#ffffff",
+            "on-secondary-fixed": "#1b1c1c",
+            "inverse-primary": "#b6c7eb",
+            "outline": "#75777e",
+            "on-error-container": "#93000a",
+            "surface-container-highest": "#e4e2de",
+            "primary-fixed-dim": "#b6c7eb",
+            "outline-variant": "#c5c6ce",
+            "surface-container-high": "#eae8e4",
+            "surface-tint": "#4e5f7e",
+            "primary": "#031632",
+            "secondary-container": "#e1dfdf",
+            "on-tertiary-fixed-variant": "#5d4201",
+            "on-primary-fixed": "#081b38",
+            "surface-container-lowest": "#ffffff",
+            "primary-container": "#1a2b48",
+            "on-surface": "#1b1c1a",
+            "on-tertiary-container": "#b08d48",
+            "surface-dim": "#dbdad6",
+            "on-secondary-fixed-variant": "#464747",
+            "secondary-fixed-dim": "#c7c6c6",
+            "on-primary-container": "#8293b5",
+            "on-tertiary-fixed": "#261900",
+            "tertiary-fixed-dim": "#e9c176",
+            "tertiary-container": "#3a2800",
+            "error": "#ba1a1a",
+            "on-secondary-container": "#626263"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Noto Serif"],
+            "body": ["Noto Serif"],
+            "label": ["Inter"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #fbf9f5;
+      color: #1b1c1a;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body selection:bg-tertiary-fixed-dim selection:text-primary">
+<header class="fixed top-0 w-full z-50 bg-[#fbf9f5]/80 backdrop-blur-md flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer transition-opacity hover:opacity-80 active:scale-95 duration-150">search</span>
+</div>
+<h1 class="font-serif text-3xl font-bold tracking-tight text-[#031632]">Dvar Torah</h1>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30 transition-opacity hover:opacity-80 active:scale-95 duration-150">
+<img class="w-full h-full object-cover" data-alt="headshot of a scholarly man with a kind expression and silver hair in a soft focus library setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6R0LIfQiESEPRE4DWARGNtYhAeFpHRwC7NCtK43EE0iT5b4e3m1AZhM1_h_3BlsCJKYASlh2Cs7qOwJTEc5G3jw8VuuuFq-cHRoLH7cg6eh7eCBG_LVlGkKKSVaiHLpiyIYxnI3ItahsQIfeGoIL6MJ8BMMGgCeQYMomx4P-Ihxs_UELdh-BDfRCCPVQnD4fAhBnZcvqCvCmwEfsU-OwqJ53eQ9TPaAo3outmVZ8u6ilINBwDot9cwL-GETd-JQInydiyiL5dtKai"/>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+<section class="mb-12 text-center md:text-left">
+<div class="flex flex-col md:flex-row items-center gap-6 mb-6">
+<div class="relative">
+<div class="w-24 h-24 rounded-full overflow-hidden bg-surface-container shadow-sm">
+<img class="w-full h-full object-cover" data-alt="portrait of an older male scholar with short gray hair wearing a professional navy jacket" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkXjDypUnGti00uLOjudLmD88J0llG5ZftakoPUMAlbClaSfKyMxAJ14Uzy2Pm1D1dqIWRUaO3Av1I3Av7SltLFqMSfqGb5uJNK6cdUv3FEKtVTevkKNZ-OqYFkWF7Up8NJBtmiV1aPG4foFxq98dedp1ony4jvOTKYrqrSVfuasS5Un2qE7EyMYB7181hW5k3rvi6U2WgnmdLFXoc1tLXB2izXtYMgp9gYcinesiV79513eLi5rkgB_gnhh_48HMhX8jSLX2tP4QP"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-tertiary-fixed-dim text-on-tertiary-fixed p-1.5 rounded-full flex items-center justify-center border-2 border-surface">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+</div>
+<div class="flex-1">
+<h2 class="font-headline text-4xl font-bold text-primary mb-1">Rabbi Avraham Cohen</h2>
+<p class="font-label text-sm uppercase tracking-widest text-on-tertiary-container font-semibold mb-3">Senior Scholar • Jerusalem</p>
+<p class="text-on-surface-variant font-body text-lg leading-relaxed italic max-w-lg">
+            Dedicated to illuminating the timeless wisdom of the Parsha through contemporary lenses.
+          </p>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="bg-surface-container-low p-5 rounded-xl text-center">
+<span class="block font-headline text-3xl font-bold text-primary">42</span>
+<span class="block font-label text-[10px] uppercase tracking-[0.15em] text-secondary font-bold mt-1">Shared</span>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl text-center">
+<span class="block font-headline text-3xl font-bold text-primary">12.4k</span>
+<span class="block font-label text-[10px] uppercase tracking-[0.15em] text-secondary font-bold mt-1">Reads</span>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl text-center">
+<span class="block font-headline text-3xl font-bold text-primary">158</span>
+<span class="block font-label text-[10px] uppercase tracking-[0.15em] text-secondary font-bold mt-1">Saved</span>
+</div>
+</div>
+<div class="flex gap-3 justify-center md:justify-start">
+<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-label font-bold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">edit_note</span>
+          New Submission
+        </button>
+<button class="bg-surface-container-high text-primary px-5 py-3 rounded-full font-label font-bold text-sm flex items-center justify-center hover:bg-surface-variant active:scale-95 transition-all">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</section>
+<section>
+<div class="flex items-baseline gap-8 mb-8 border-none overflow-x-auto">
+<button class="relative pb-2 font-label text-sm font-bold tracking-widest uppercase text-primary">
+          My Submissions
+          <span class="absolute bottom-0 left-0 w-full h-[3px] bg-tertiary-fixed-dim rounded-full"></span>
+</button>
+<button class="pb-2 font-label text-sm font-bold tracking-widest uppercase text-on-surface-variant/40 hover:text-on-surface-variant transition-colors">
+          Drafts (3)
+        </button>
+<button class="pb-2 font-label text-sm font-bold tracking-widest uppercase text-on-surface-variant/40 hover:text-on-surface-variant transition-colors">
+          Bookmarks
+        </button>
+</div>
+<div class="space-y-12">
+<article class="group">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-tertiary-container font-extrabold">Parshat Bereshit • Oct 2023</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 cursor-pointer hover:text-primary">more_vert</span>
+</div>
+<h3 class="font-headline text-2xl font-bold text-primary leading-tight mb-3 group-hover:text-primary/70 transition-colors">The Architecture of Light: A Study of Divine Genesis</h3>
+<p class="font-body text-on-surface-variant leading-relaxed mb-4 line-clamp-2">
+            In the opening lines of our tradition, light precedes luminaries. This teaches us that the essence of clarity is internal, a primordial gift rather than a celestial byproduct...
+          </p>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1 font-label text-[11px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">visibility</span> 2,401
+            </div>
+<div class="flex items-center gap-1 font-label text-[11px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">chat_bubble</span> 18
+            </div>
+<div class="flex items-center gap-1 font-label text-[11px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">share</span>
+</div>
+</div>
+</article>
+<div class="h-px bg-surface-container-high w-1/4 mx-auto"></div>
+<article class="group">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-tertiary-container font-extrabold">Parshat Noach • Nov 2023</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 cursor-pointer hover:text-primary">more_vert</span>
+</div>
+<h3 class="font-headline text-2xl font-bold text-primary leading-tight mb-3 group-hover:text-primary/70 transition-colors">Silence Within the Storm: Finding the Inner Ark</h3>
+<p class="font-body text-on-surface-variant leading-relaxed mb-4 line-clamp-2">
+            The Teva was not just a vessel for survival, but a sanctuary of deliberate limitation. When the world is chaotic, we must build a world of focused intent...
+          </p>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1 font-label text-[11px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">visibility</span> 1,890
+            </div>
+<div class="flex items-center gap-1 font-label text-[11px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">chat_bubble</span> 12
+            </div>
+<div class="flex items-center gap-1 font-label text-[11px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">share</span>
+</div>
+</div>
+</article>
+<div class="h-px bg-surface-container-high w-1/4 mx-auto"></div>
+<article class="group">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-tertiary-container font-extrabold">Parshat Lech Lecha • Nov 2023</span>
+<span class="material-symbols-outlined text-on-surface-variant/30 cursor-pointer hover:text-primary">more_vert</span>
+</div>
+<h3 class="font-headline text-2xl font-bold text-primary leading-tight mb-3 group-hover:text-primary/70 transition-colors">The Courage of Departure: Leaving the Familiar Self</h3>
+<p class="font-body text-on-surface-variant leading-relaxed mb-4 line-clamp-2">
+            Abraham’s journey began with a command to leave his past. We explore what it means to shed identity to find a more authentic spiritual destination...
+          </p>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1 font-label text-[11px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">visibility</span> 3,115
+            </div>
+<div class="flex items-center gap-1 font-label text-[11px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">chat_bubble</span> 45
+            </div>
+<div class="flex items-center gap-1 font-label text-[11px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">share</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center pt-3 pb-6 px-4 bg-[#fbf9f5]/90 backdrop-blur-xl z-50 rounded-t-3xl shadow-[0_-4px_24px_rgba(27,28,26,0.04)]">
+<a class="flex flex-col items-center justify-center text-[#1b1c1a]/40 hover:text-[#031632] transition-all" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-semibold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#1b1c1a]/40 hover:text-[#031632] transition-all" href="#">
+<span class="material-symbols-outlined mb-1">explore</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-semibold">Browse</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#1b1c1a]/40 hover:text-[#031632] transition-all" href="#">
+<span class="material-symbols-outlined mb-1">bookmark</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-semibold">Saved</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#031632] scale-110 transition-all" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-sans text-[10px] uppercase tracking-widest font-semibold">Profile</span>
+</a>
+</nav>
+</body></html>
