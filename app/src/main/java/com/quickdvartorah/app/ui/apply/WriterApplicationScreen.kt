@@ -320,10 +320,10 @@ private fun ApplicationField(label: String, field: @Composable () -> Unit) {
 @Composable
 private fun applicationFieldColors() = OutlinedTextFieldDefaults.colors(
     focusedBorderColor = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-    disabledBorderColor = MaterialTheme.colorScheme.outlineVariant,
+    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+    disabledBorderColor = MaterialTheme.colorScheme.outline,
     disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-    focusedContainerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.55f),
-    unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.55f),
-    disabledContainerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.4f)
+    focusedContainerColor = MaterialTheme.colorScheme.background,
+    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
 )

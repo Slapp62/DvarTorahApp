@@ -107,7 +107,7 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
                             .padding(horizontal = 16.dp, vertical = 6.dp),
                         shape = MaterialTheme.shapes.extraLarge,
                         color = MaterialTheme.colorScheme.surface.copy(alpha = 0.96f),
-                        shadowElevation = 6.dp
+                        shadowElevation = 1.dp
                     ) {
                         NavigationBar(
                             containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.0f),
@@ -160,6 +160,7 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
 
             composable(Screen.Saved.route) {
                 SavedScreen(
+                    isAuthenticated = currentUser != null,
                     onDvarClick = { navController.navigate(Screen.DvarDetail.createRoute(it)) },
                     onRequireAuth = { navController.navigate(Screen.Login.route) }
                 )
@@ -233,25 +234,35 @@ fun AppNavHost(authViewModel: AuthViewModel = hiltViewModel()) {
             }
 
             composable(Screen.Profile.route) {
-                ProfileScreen(
-                    currentUser = currentUser,
-                    userDvareiTorah = userDvareiTorah,
-                    userApplication = userApplication,
-                    parshaScheduleMode = parshaScheduleMode,
-                    showManageAdPrivacy = false,
-                    isDeletingAccount = isDeletingAccount,
-                    onNavigateToLogin = { navController.navigate(Screen.Login.route) },
-                    onNavigateToApply = { navController.navigate(Screen.WriterApply.route) },
-                    onNavigateToWrite = { navController.navigate(Screen.WriteCreate.route) },
-                    onNavigateToDvar = { navController.navigate(Screen.DvarDetail.createRoute(it)) },
-                    onNavigateToPrivacyPolicy = { navController.navigate(Screen.PrivacyPolicy.route) },
-                    onNavigateToAccountDeletionPolicy = { navController.navigate(Screen.AccountDeletionPolicy.route) },
-                    onNavigateToContentPolicy = { navController.navigate(Screen.ContentPolicy.route) },
-                    onSignOut = { authViewModel.signOut() },
-                    onParshaScheduleModeChange = profileViewModel::setParshaScheduleMode,
-                    onManageAdPrivacy = { },
-                    onDeleteAccount = profileViewModel::deleteAccount
-                )
+                if (currentUser == null) {
+                    LoginScreen(
+                        onNavigateToFeed = {
+                            navController.navigate(Screen.Profile.route) {
+                                popUpTo(Screen.Login.route) { inclusive = true }
+                            }
+                        },
+                        onNavigateToRegister = { navController.navigate(Screen.Register.route) }
+                    )
+                } else {
+                    ProfileScreen(
+                        currentUser = currentUser,
+                        userDvareiTorah = userDvareiTorah,
+                        userApplication = userApplication,
+                        parshaScheduleMode = parshaScheduleMode,
+                        showManageAdPrivacy = false,
+                        isDeletingAccount = isDeletingAccount,
+                        onNavigateToApply = { navController.navigate(Screen.WriterApply.route) },
+                        onNavigateToWrite = { navController.navigate(Screen.WriteCreate.route) },
+                        onNavigateToDvar = { navController.navigate(Screen.DvarDetail.createRoute(it)) },
+                        onNavigateToPrivacyPolicy = { navController.navigate(Screen.PrivacyPolicy.route) },
+                        onNavigateToAccountDeletionPolicy = { navController.navigate(Screen.AccountDeletionPolicy.route) },
+                        onNavigateToContentPolicy = { navController.navigate(Screen.ContentPolicy.route) },
+                        onSignOut = { authViewModel.signOut() },
+                        onParshaScheduleModeChange = profileViewModel::setParshaScheduleMode,
+                        onManageAdPrivacy = { },
+                        onDeleteAccount = profileViewModel::deleteAccount
+                    )
+                }
             }
 
             composable(Screen.PrivacyPolicy.route) {

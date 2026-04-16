@@ -53,7 +53,6 @@ fun ProfileScreen(
     parshaScheduleMode: ParshaScheduleMode,
     showManageAdPrivacy: Boolean,
     isDeletingAccount: Boolean,
-    onNavigateToLogin: () -> Unit,
     onNavigateToApply: () -> Unit,
     onNavigateToWrite: () -> Unit,
     onNavigateToDvar: (String) -> Unit,
@@ -89,29 +88,7 @@ fun ProfileScreen(
             )
         }
     ) { padding ->
-        if (currentUser == null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center
-            ) {
-                EditorialPanel(modifier = Modifier.padding(16.dp)) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Text(
-                            text = "Sign in to view your profile",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Button(onClick = onNavigateToLogin) { Text("Sign In") }
-                    }
-                }
-            }
-        } else {
+        if (currentUser != null) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()

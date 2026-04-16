@@ -11,10 +11,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 sealed class SavedFilter {
@@ -54,8 +54,7 @@ class SavedViewModel @Inject constructor(
             if (user == null) {
                 flowOf(SavedUiState.SignedOut)
             } else {
-                dvarTorahRepository.getLikedDvareiTorah(user.uid).map { items ->
-                    val currentFilter = selectedFilter.value
+                dvarTorahRepository.getLikedDvareiTorah(user.uid).combine(selectedFilter) { items, currentFilter ->
                     val filtered = items.filter { dvar ->
                         when (currentFilter) {
                             SavedFilter.All -> true

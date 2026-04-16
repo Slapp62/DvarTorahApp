@@ -230,9 +230,9 @@ private fun RegisterField(label: String, field: @Composable () -> Unit) {
 @Composable
 private fun registerFieldColors() = OutlinedTextFieldDefaults.colors(
     focusedBorderColor = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-    focusedContainerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.6f),
-    unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.6f)
+    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+    focusedContainerColor = MaterialTheme.colorScheme.background,
+    unfocusedContainerColor = MaterialTheme.colorScheme.background
 )
 
 private tailrec fun Context.findActivity(): Activity? = when (this) {

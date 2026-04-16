@@ -37,6 +37,7 @@ class AuthRepositoryImpl @Inject constructor(
     override fun isGoogleSignInConfigured(): Boolean = appContext.getGoogleWebClientIdOrNull() != null
 
     override fun authStateFlow(): Flow<FirebaseUser?> = callbackFlow {
+        trySend(auth.currentUser)
         val listener = FirebaseAuth.AuthStateListener { trySend(it.currentUser) }
         auth.addAuthStateListener(listener)
         awaitClose { auth.removeAuthStateListener(listener) }

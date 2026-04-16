@@ -131,16 +131,6 @@ fun DvarTorahDetailScreen(
                         .map { it.trim() }
                         .filter { it.isNotBlank() }
                 }
-                val reflectionPoints = remember(dvar.body) {
-                    bodyParagraphs
-                        .take(2)
-                        .map { paragraph ->
-                            paragraph
-                                .replace("\\s+".toRegex(), " ")
-                                .trim()
-                                .let { if (it.length > 120) "${it.take(120).trim()}..." else it }
-                        }
-                }
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -279,39 +269,6 @@ fun DvarTorahDetailScreen(
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
-                                }
-                            }
-                        }
-                    }
-
-                    if (reflectionPoints.isNotEmpty()) {
-                        EditorialPanel {
-                            Column(
-                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 22.dp),
-                                verticalArrangement = Arrangement.spacedBy(14.dp)
-                            ) {
-                                Text(
-                                    text = "Points for Reflection",
-                                    style = MaterialTheme.typography.titleSmall,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                reflectionPoints.forEachIndexed { index, point ->
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                        verticalAlignment = Alignment.Top
-                                    ) {
-                                        Text(
-                                            text = "${index + 1}.",
-                                            style = MaterialTheme.typography.labelLarge,
-                                            color = MaterialTheme.colorScheme.secondary
-                                        )
-                                        Text(
-                                            text = point,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            modifier = Modifier.weight(1f)
-                                        )
-                                    }
                                 }
                             }
                         }

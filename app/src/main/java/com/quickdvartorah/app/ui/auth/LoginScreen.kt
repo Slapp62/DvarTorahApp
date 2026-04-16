@@ -302,9 +302,9 @@ private fun RowLinks(prompt: String, action: String, onAction: () -> Unit) {
 @Composable
 private fun authFieldColors() = OutlinedTextFieldDefaults.colors(
     focusedBorderColor = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-    focusedContainerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.6f),
-    unfocusedContainerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.6f)
+    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+    focusedContainerColor = MaterialTheme.colorScheme.background,
+    unfocusedContainerColor = MaterialTheme.colorScheme.background
 )
 
 private tailrec fun Context.findActivity(): Activity? = when (this) {

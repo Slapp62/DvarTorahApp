@@ -39,6 +39,7 @@ import com.quickdvartorah.app.ui.components.LoadingOverlay
 
 @Composable
 fun SavedScreen(
+    isAuthenticated: Boolean,
     onDvarClick: (String) -> Unit,
     onRequireAuth: () -> Unit,
     viewModel: SavedViewModel = hiltViewModel()
@@ -61,7 +62,13 @@ fun SavedScreen(
         when (val state = uiState) {
             SavedUiState.Loading -> LoadingOverlay(label = "Loading saved insights")
             is SavedUiState.Error -> ErrorMessage(state.message)
-            SavedUiState.SignedOut -> SavedSignedOut(onRequireAuth)
+            SavedUiState.SignedOut -> {
+                if (isAuthenticated) {
+                    LoadingOverlay(label = "Refreshing saved insights")
+                } else {
+                    SavedSignedOut(onRequireAuth)
+                }
+            }
             is SavedUiState.Empty -> SavedEmpty(state.filter, onRequireAuth)
             is SavedUiState.Success -> {
                 LazyColumn(
